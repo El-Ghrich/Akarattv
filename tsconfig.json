@@ -9,6 +9,11 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+
+    /* Strict additions */
+    "noUncheckedIndexedAccess": true,       /* Treating array/object lookups as T | undefined */
+    "noFallthroughCasesInSwitch": true,     /* Prevents accidental switch statement fallthrough */
+
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",

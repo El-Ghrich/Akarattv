@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminOrEditor } from '@/access'
 import { slugify } from '@/utilities/slugify'
+import { l } from '@/utilities/labels'
 
 /**
  * Returns the id of a relationship value, whether it was submitted as a raw id
@@ -15,9 +16,48 @@ const getRelationID = (relation: unknown): number | string | undefined => {
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
+  labels: {
+    singular: l('Article', 'Article', 'مقال'),
+    plural: l('Articles', 'Articles', 'المقالات'),
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'author', '_status', 'publishedAt', 'updatedAt'],
+    group: l('Content', 'Contenu', 'المحتوى'),
+    livePreview: {
+      openByDefault: true,
+      breakpoints: [
+        {
+          name: 'mobile',
+          label: 'Mobile',
+          width: 390,
+          height: 844,
+        },
+        {
+          name: 'tablet',
+          label: 'Tablet',
+          width: 768,
+          height: 1024,
+        },
+        {
+          name: 'desktop',
+          label: 'Desktop',
+          width: 1440,
+          height: 900,
+        },
+      ],
+      url: ({ data, locale, req }) => {
+        if (typeof data.slug !== 'string' || !data.slug) return undefined
+
+        const host = req.headers.get('host')
+        const protocol = req.headers.get('x-forwarded-proto') ?? 'http'
+        const serverURL =
+          process.env.NEXT_PUBLIC_SERVER_URL ||
+          (host ? `${protocol}://${host}` : 'http://localhost:3000')
+
+        return `${serverURL}/articles/${encodeURIComponent(data.slug)}?locale=${locale.code}&preview=1`
+      },
+    },
   },
   versions: {
     drafts: true,
@@ -79,6 +119,7 @@ export const Articles: CollectionConfig = {
       type: 'text',
       localized: true,
       required: true,
+      label: l('Title', 'Titre', 'العنوان'),
     },
     {
       name: 'slug',
@@ -87,9 +128,14 @@ export const Articles: CollectionConfig = {
       required: true,
       unique: true,
       index: true,
+      label: l('Slug', 'Identifiant URL', 'المُعرِّف'),
       admin: {
         position: 'sidebar',
-        description: 'Auto-generated from the title. You can edit it.',
+        description: l(
+          'Auto-generated from the title. You can edit it.',
+          'Généré automatiquement depuis le titre. Modifiable.',
+          'يُولَّد تلقائياً من العنوان ويمكن تعديله.',
+        ),
       },
     },
     {
@@ -97,39 +143,46 @@ export const Articles: CollectionConfig = {
       type: 'textarea',
       localized: true,
       required: true,
+      label: l('Excerpt', 'Extrait', 'المقتطف'),
     },
     {
       name: 'content',
       type: 'richText',
       localized: true,
       required: true,
+      label: l('Content', 'Contenu', 'المحتوى'),
     },
     {
       name: 'heroImage',
       type: 'relationship',
       relationTo: 'media',
       required: true,
+      label: l('Hero image', 'Image principale', 'الصورة الرئيسية'),
     },
     {
       name: 'category',
       type: 'relationship',
       relationTo: 'categories',
       required: true,
+      label: l('Category', 'Catégorie', 'التصنيف'),
     },
     {
       name: 'region',
       type: 'relationship',
       relationTo: 'regions',
+      label: l('Region', 'Région', 'الجهة'),
     },
     {
       name: 'author',
       type: 'relationship',
       relationTo: 'authors',
       required: true,
+      label: l('Author', 'Auteur', 'المؤلف'),
     },
     {
       name: 'publishedAt',
       type: 'date',
+      label: l('Published at', 'Date de publication', 'تاريخ النشر'),
       admin: {
         position: 'sidebar',
         date: {
@@ -141,6 +194,7 @@ export const Articles: CollectionConfig = {
       name: 'isFeatured',
       type: 'checkbox',
       defaultValue: false,
+      label: l('Featured', 'À la une', 'مقال مميز'),
       admin: {
         position: 'sidebar',
       },
@@ -150,6 +204,7 @@ export const Articles: CollectionConfig = {
       type: 'relationship',
       relationTo: 'articles',
       hasMany: true,
+      label: l('Related articles', 'Articles liés', 'مقالات ذات صلة'),
       filterOptions: ({ id }) => (id ? { id: { not_equals: id } } : true),
     },
   ],

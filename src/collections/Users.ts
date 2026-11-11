@@ -1,11 +1,17 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminFieldLevel, isAdminOrEditor, isAdminOrSelf } from '@/access'
+import { l } from '@/utilities/labels'
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  labels: {
+    singular: l('User', 'Utilisateur', 'مستخدم'),
+    plural: l('Users', 'Utilisateurs', 'المستخدمون'),
+  },
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'roles', 'createdAt'],
+    group: l('Settings', 'Paramètres', 'الإعدادات'),
   },
   auth: true,
   access: {
@@ -47,13 +53,14 @@ export const Users: CollectionConfig = {
       type: 'select',
       hasMany: true,
       defaultValue: ['editor'],
+      label: l('Roles', 'Rôles', 'الأدوار'),
       options: [
         {
-          label: 'Admin',
+          label: l('Admin', 'Administrateur', 'مدير'),
           value: 'admin',
         },
         {
-          label: 'Editor',
+          label: l('Editor', 'Éditeur', 'محرر'),
           value: 'editor',
         },
       ],

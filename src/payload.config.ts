@@ -2,6 +2,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import {
   AlignFeature,
   BlockquoteFeature,
+  BlocksFeature,
   BoldFeature,
   ChecklistFeature,
   defaultColors,
@@ -20,6 +21,9 @@ import {
   UnorderedListFeature,
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
+import { ar } from '@payloadcms/translations/languages/ar'
+import { en } from '@payloadcms/translations/languages/en'
+import { fr } from '@payloadcms/translations/languages/fr'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -31,6 +35,11 @@ import { Authors } from './collections/Authors'
 import { Categories } from './collections/Categories'
 import { Regions } from './collections/Regions'
 import { Articles } from './collections/Articles'
+import { ImageBlock } from './blocks/ImageBlock'
+import { PullQuoteBlock } from './blocks/PullQuoteBlock'
+import { RelatedArticleBlock } from './blocks/RelatedArticleBlock'
+import { YouTubeBlock } from './blocks/YouTubeBlock'
+import { InfoBoxBlock } from './blocks/InfoBoxBlock'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -72,6 +81,10 @@ export default buildConfig({
       LinkFeature(),
       UploadFeature({ enabledCollections: ['media'] }),
       HorizontalRuleFeature(),
+      // Custom content blocks, inserted from the slash (/) menu.
+      BlocksFeature({
+        blocks: [ImageBlock, PullQuoteBlock, RelatedArticleBlock, YouTubeBlock, InfoBoxBlock],
+      }),
       // WordPress-style toolbar that stays visible while scrolling.
       FixedToolbarFeature(),
       // Text colour picker in the toolbar.
@@ -95,6 +108,12 @@ export default buildConfig({
   }),
   sharp,
   plugins: [],
+  i18n: {
+    // Admin UI languages. Arabic is the default when the browser does not
+    // send a supported Accept-Language value and no language cookie is set.
+    supportedLanguages: { ar, en, fr },
+    fallbackLanguage: 'ar',
+  },
   localization: {
     locales: [
       { code: 'ar', label: 'العربية', rtl: true },

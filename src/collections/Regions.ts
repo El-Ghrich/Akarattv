@@ -1,11 +1,17 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminOrEditor } from '@/access'
+import { l } from '@/utilities/labels'
 
 export const Regions: CollectionConfig = {
   slug: 'regions',
+  labels: {
+    singular: l('Region', 'Région', 'جهة'),
+    plural: l('Regions', 'Régions', 'الجهات'),
+  },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'slug', 'updatedAt'],
+    group: l('Content', 'Contenu', 'المحتوى'),
   },
   access: {
     read: () => true,
@@ -19,6 +25,7 @@ export const Regions: CollectionConfig = {
       type: 'text',
       localized: true,
       required: true,
+      label: l('Name', 'Nom', 'الاسم'),
     },
     {
       name: 'slug',
@@ -27,6 +34,7 @@ export const Regions: CollectionConfig = {
       required: true,
       unique: true,
       index: true,
+      label: l('Slug', 'Identifiant URL', 'المُعرِّف'),
       admin: {
         position: 'sidebar',
       },

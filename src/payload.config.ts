@@ -1,5 +1,25 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import {
+  AlignFeature,
+  BlockquoteFeature,
+  BoldFeature,
+  ChecklistFeature,
+  defaultColors,
+  FixedToolbarFeature,
+  HeadingFeature,
+  HorizontalRuleFeature,
+  IndentFeature,
+  ItalicFeature,
+  lexicalEditor,
+  LinkFeature,
+  OrderedListFeature,
+  ParagraphFeature,
+  StrikethroughFeature,
+  TextStateFeature,
+  UnderlineFeature,
+  UnorderedListFeature,
+  UploadFeature,
+} from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -7,6 +27,10 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Authors } from './collections/Authors'
+import { Categories } from './collections/Categories'
+import { Regions } from './collections/Regions'
+import { Articles } from './collections/Articles'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -18,8 +42,48 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
-  editor: lexicalEditor(),
+  collections: [Users, Media, Authors, Categories, Regions, Articles],
+  editor: lexicalEditor({
+    admin: {
+      // No hover "+" add-block handle and no bottom "+" paragraph button:
+      // pressing Enter is enough to keep writing.
+      hideAddBlockButton: true,
+      hideInsertParagraphAtEnd: true,
+    },
+    features: [
+      // Structure. H1 is reserved for the article title, so it is not
+      // available inside the rich text body.
+      ParagraphFeature(),
+      HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4', 'h5'] }),
+      // Inline formatting
+      BoldFeature(),
+      ItalicFeature(),
+      UnderlineFeature(),
+      StrikethroughFeature(),
+      // Alignment + indentation
+      AlignFeature(),
+      IndentFeature(),
+      // Lists
+      UnorderedListFeature(),
+      OrderedListFeature(),
+      ChecklistFeature(),
+      // Quotes, links, inline images, dividers
+      BlockquoteFeature(),
+      LinkFeature(),
+      UploadFeature({ enabledCollections: ['media'] }),
+      HorizontalRuleFeature(),
+      // WordPress-style toolbar that stays visible while scrolling.
+      FixedToolbarFeature(),
+      // Text colour picker in the toolbar.
+      TextStateFeature({
+        state: {
+          color: {
+            ...defaultColors.text,
+          },
+        },
+      }),
+    ],
+  }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
@@ -31,4 +95,12 @@ export default buildConfig({
   }),
   sharp,
   plugins: [],
+  localization: {
+    locales: [
+      { code: 'ar', label: 'العربية', rtl: true },
+      { code: 'fr', label: 'Français' },
+    ],
+    defaultLocale: 'ar',
+    fallback: true,
+  }
 })

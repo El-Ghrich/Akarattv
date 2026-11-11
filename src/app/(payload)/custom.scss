@@ -1,0 +1,26 @@
+/**
+ * Rich text editor tweaks.
+ *
+ * The toolbar is provided by `FixedToolbarFeature()` and is already sticky.
+ * These rules only make the writing area feel like a real editor: a tall
+ * canvas you can click anywhere in, and a toolbar that does not get lost
+ * against the content while scrolling.
+ */
+
+/* Give the editor a large, comfortable writing area. */
+.rich-text-lexical .ContentEditable__root {
+  min-height: 32rem;
+  padding-bottom: calc(var(--base) * 1.5);
+  cursor: text;
+}
+
+/* Keep the fixed toolbar readable when content scrolls underneath it. */
+.rich-text-lexical .fixed-toolbar {
+  background: var(--theme-elevation-0);
+  border-bottom: 1px solid var(--theme-elevation-150);
+  z-index: 3;
+}
+
+.rich-text-lexical .fixed-toolbar::before {
+  opacity: 1;
+}

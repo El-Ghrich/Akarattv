@@ -6,6 +6,7 @@ import {
   type JSXConvertersFunction,
 } from '@payloadcms/richtext-lexical/react'
 import { RichText as LexicalRichText } from '@payloadcms/richtext-lexical/react'
+import Image from 'next/image'
 import React from 'react'
 
 import type { Article, Media } from '@/payload-types'
@@ -53,24 +54,30 @@ type MediaFields = {
 const asMedia = (value: unknown): MediaFields | null =>
   value !== null && typeof value === 'object' ? (value as MediaFields) : null
 
+/**
+ * Body images sit inside the 720px article column, so that is the widest they
+ * are ever painted at 1x. `next/image` turns this into a `srcset` of real
+ * widths (400/800/1200/1600) and lets the browser pick one.
+ */
+const BODY_IMAGE_SIZES = '(max-width: 800px) 100vw, 720px'
+
 const image = (
   media: MediaFields,
   alt: string,
   caption?: null | string,
-  eager?: boolean,
 ): React.ReactNode => {
   if (!media.url) return null
 
   return (
     <figure className="rich-text__figure" dir="auto">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         alt={alt}
-        decoding="async"
-        height={media.height ?? undefined}
-        loading={eager ? 'eager' : 'lazy'}
+        // Stored dimensions reserve the right amount of space before load.
+        // Fall back to a 4:3 box for documents predating the media pipeline.
+        height={media.height ?? 900}
+        sizes={BODY_IMAGE_SIZES}
         src={media.url}
-        width={media.width ?? undefined}
+        width={media.width ?? 1200}
       />
       {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>

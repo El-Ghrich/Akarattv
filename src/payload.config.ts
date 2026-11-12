@@ -21,6 +21,7 @@ import {
   UnorderedListFeature,
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { ar } from '@payloadcms/translations/languages/ar'
 import { en } from '@payloadcms/translations/languages/en'
 import { fr } from '@payloadcms/translations/languages/fr'
@@ -43,6 +44,38 @@ import { InfoBoxBlock } from './blocks/InfoBoxBlock'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+/**
+ * Cloudflare R2 speaks the S3 API with three quirks that are not optional:
+ *
+ * - `region: 'auto'` — any other region string is rejected.
+ * - `forcePathStyle: true` — R2 has no virtual-hosted-style buckets, so the
+ *   request must be `endpoint/bucket/key`, not `bucket.endpoint/key`.
+ * - the endpoint is per account, never per bucket.
+ *
+ * Files are uploaded through the private S3 host and read back through the
+ * public `*.r2.dev` origin. Those are two different hostnames: the S3 host
+ * refuses anonymous reads, which is exactly why `generateFileURL` below exists.
+ */
+const r2PublicURL = (process.env.R2_PUBLIC_URL ?? '').replace(/\/+$/, '')
+
+const r2 = {
+  accountID: process.env.R2_ACCOUNT_ID ?? '',
+  accessKeyID: process.env.R2_ACCESS_KEY_ID ?? '',
+  bucket: process.env.R2_BUCKET ?? '',
+  secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ?? '',
+}
+
+/**
+ * Storage is switched off when the credentials are absent, so `npm run dev`
+ * still boots on a fresh clone with no Cloudflare account.
+ */
+const r2Enabled = Boolean(
+  r2.accountID && r2.accessKeyID && r2.bucket && r2.secretAccessKey && r2PublicURL,
+)
+
+/** 12 MB. Enforced before sharp ever buffers the file. */
+const MAX_UPLOAD_BYTES = 12 * 1024 * 1024
 
 export default buildConfig({
   admin: {
@@ -107,7 +140,51 @@ export default buildConfig({
     },
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    s3Storage({
+      enabled: r2Enabled,
+      bucket: r2.bucket,
+      /**
+       * Vercel caps a serverless request body at 4.5 MB, which is smaller than
+       * the 12 MB we accept. With client uploads the browser asks Payload for a
+       * presigned URL, then PUTs the bytes straight to R2, so the function only
+       * ever sees a few hundred bytes of JSON. The bucket needs a CORS rule
+       * that allows PUT from the admin's origin (see README).
+       */
+      clientUploads: true,
+      collections: {
+        media: {
+          // Every object lands under `media/`, which keeps the bucket tidy and
+          // gives Cloudflare a single path to scope cache rules to later.
+          prefix: 'media',
+          // Stop Payload from proxying reads through /api/media/file/*. The
+          // browser talks to R2 directly, so the CDN can cache the bytes.
+          disablePayloadAccessControl: true,
+          // Without this the adapter would hand out
+          // `https://<account>.r2.cloudflarestorage.com/<bucket>/<key>` —
+          // the private S3 host, which 403s for anonymous visitors.
+          // `prefix` here is the object's folder, including `_objectKey`.
+          generateFileURL: ({ filename, prefix }) =>
+            `${r2PublicURL}/${[prefix, encodeURIComponent(filename)].filter(Boolean).join('/')}`,
+        },
+      },
+      config: {
+        endpoint: `https://${r2.accountID}.r2.cloudflarestorage.com`,
+        region: 'auto',
+        forcePathStyle: true,
+        credentials: {
+          accessKeyId: r2.accessKeyID,
+          secretAccessKey: r2.secretAccessKey,
+        },
+      },
+    }),
+  ],
+  upload: {
+    // Payload-wide cap, applied to every upload collection before resizing.
+    limits: {
+      fileSize: MAX_UPLOAD_BYTES,
+    },
+  },
   i18n: {
     // Admin UI languages. Arabic is the default when the browser does not
     // send a supported Accept-Language value and no language cookie is set.

@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import React from 'react'
 
 import type { Article, Author, Category, Media, Region } from '@/payload-types'
@@ -5,6 +6,12 @@ import type { Article, Author, Category, Media, Region } from '@/payload-types'
 import { RichText } from '@/components/RichText'
 
 type Locale = 'ar' | 'fr'
+
+/**
+ * The article column is capped at 800px, so that is the widest a hero can be
+ * painted at 1x. Above 800px of viewport the layout stops growing.
+ */
+const HERO_SIZES = '(max-width: 800px) 100vw, 800px'
 
 const isDoc = <T,>(value: T | number | null | undefined): value is T =>
   value !== null && typeof value === 'object'
@@ -72,12 +79,11 @@ export function ArticleView({ article, locale, preview = false }: ArticleViewPro
           {author ? (
             <span className="article-page__author">
               {author.photo && isDoc<Media>(author.photo) && author.photo.url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   alt={author.photo.alt ?? author.name}
                   className="article-page__author-photo"
                   height={48}
-                  loading="eager"
+                  sizes="48px"
                   src={author.photo.url}
                   width={48}
                 />
@@ -112,14 +118,18 @@ export function ArticleView({ article, locale, preview = false }: ArticleViewPro
 
       {heroImage?.url ? (
         <figure className="article-page__hero">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             alt={heroImage.alt ?? article.title}
-            decoding="async"
-            height={heroImage.height ?? undefined}
-            loading="eager"
+            // Only the hero is prioritised: it is the largest element in the
+            // initial viewport and the one that decides LCP.
+            priority
+            sizes={HERO_SIZES}
             src={heroImage.url}
-            width={heroImage.width ?? undefined}
+            // Stored dimensions give the browser the real aspect ratio, which
+            // reserves the space before the bytes arrive. Fall back to a 16:9
+            // box when an old document has none.
+            height={heroImage.height ?? 900}
+            width={heroImage.width ?? 1600}
           />
           {heroImage.caption ? <figcaption>{heroImage.caption}</figcaption> : null}
         </figure>

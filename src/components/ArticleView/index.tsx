@@ -4,8 +4,7 @@ import React from 'react'
 import type { Article, Author, Category, Media, Region } from '@/payload-types'
 
 import { RichText } from '@/components/RichText'
-
-type Locale = 'ar' | 'fr'
+import type { Locale } from '@/i18n/routing'
 
 /**
  * The article column is capped at 800px, so that is the widest a hero can be

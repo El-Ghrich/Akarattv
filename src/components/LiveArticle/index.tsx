@@ -6,8 +6,7 @@ import React from 'react'
 import type { Article } from '@/payload-types'
 
 import { ArticleView } from '@/components/ArticleView'
-
-type Locale = 'ar' | 'fr'
+import type { Locale } from '@/i18n/routing'
 
 export type LiveArticleProps = {
   initialArticle: Article

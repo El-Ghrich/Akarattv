@@ -1,5 +1,6 @@
 import { withPayload } from '@payloadcms/next/withPayload'
 import type { NextConfig } from 'next'
+import createNextIntlPlugin from 'next-intl/plugin'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -37,18 +38,28 @@ const nextConfig: NextConfig = {
      * (that origin accepts no Cache-Control of its own yet).
      */
     minimumCacheTTL: 31536000,
-    remotePatterns: mediaHost
-      ? [
-          {
-            protocol: 'https',
-            hostname: mediaHost,
-            pathname: '/**',
-          },
-        ]
-      : [],
+    remotePatterns: [
+      ...(mediaHost
+        ? [
+            {
+              protocol: 'https' as const,
+              hostname: mediaHost,
+              pathname: '/**',
+            },
+          ]
+        : []),
+      {
+        protocol: 'https' as const,
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+    ],
     localPatterns: [
       {
         pathname: '/api/media/file/**',
+      },
+      {
+        pathname: '/logo.png',
       },
     ],
   },
@@ -66,4 +77,6 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withPayload(nextConfig, { devBundleServerPackages: false })
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
+
+export default withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false })

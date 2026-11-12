@@ -1,92 +1,178 @@
-:root {
-  --font-mono: 'Roboto Mono', monospace;
+@import 'tailwindcss';
+
+@theme {
+  --color-green-950: #0a2003;
+  --color-green-900: #0f2e04;
+  --color-green-800: #143a06;
+  --color-green-700: #1f4f0c;
+  --color-green-600: #2e6a17;
+  --color-green-100: #e6efe1;
+
+  --color-gold-700: #8f6b1f;
+  --color-gold-500: #c9a24b;
+  --color-gold-400: #ddbe6f;
+  --color-gold-300: #ebd59c;
+
+  --color-ink-900: #111712;
+  --color-ink-700: #3a423b;
+  --color-ink-500: #6b746c;
+  --color-ink-300: #b8bfb8;
+
+  --color-line: #e5e1d3;
+  --color-canvas: #f7f5ef;
+  --color-surface: #ffffff;
+  --color-breaking: #b3261e;
+  --color-success: #2e7d32;
+
+  --font-headline: var(--font-site), 'Segoe UI', Tahoma, system-ui, sans-serif;
+  --font-body: var(--font-site), 'Segoe UI', Tahoma, system-ui, sans-serif;
+
+  --container-content: 1280px;
+  --radius-card: 8px;
+
+  --text-display: 44px;
+  --text-display--line-height: 1.35;
+  --text-display--font-weight: 800;
+  --text-h1: 38px;
+  --text-h1--line-height: 1.4;
+  --text-h1--font-weight: 800;
+  --text-h2: 28px;
+  --text-h2--line-height: 1.45;
+  --text-h2--font-weight: 700;
+  --text-h3: 22px;
+  --text-h3--line-height: 1.5;
+  --text-h3--font-weight: 700;
+  --text-card-title: 20px;
+  --text-card-title--line-height: 1.5;
+  --text-card-title--font-weight: 700;
+  --text-body-article: 19px;
+  --text-body-article--line-height: 1.9;
+  --text-body-article--font-weight: 400;
+  --text-body-ui: 16px;
+  --text-body-ui--line-height: 1.7;
+  --text-body-ui--font-weight: 400;
+  --text-meta: 14px;
+  --text-meta--line-height: 1.5;
+  --text-meta--font-weight: 600;
+  --text-label: 12px;
+  --text-label--line-height: 1.2;
+  --text-label--font-weight: 700;
 }
 
-* {
-  box-sizing: border-box;
-}
+@layer base {
+  :root {
+    --font-mono: 'Roboto Mono', monospace;
+  }
 
-html {
-  font-size: 18px;
-  line-height: 32px;
+  * {
+    box-sizing: border-box;
+  }
 
-  background: rgb(0, 0, 0);
-  -webkit-font-smoothing: antialiased;
-}
+  html {
+    font-size: 16px;
+    line-height: 1.5;
 
-html,
-body,
-#app {
-  height: 100%;
-}
+    background: #f7f5ef;
+    color: #111712;
+    -webkit-font-smoothing: antialiased;
+  }
 
-body {
-  font-family: system-ui;
-  font-size: 18px;
-  line-height: 32px;
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
 
-  margin: 0;
-  color: rgb(1000, 1000, 1000);
+  body {
+    font-size: 16px;
+    line-height: 1.6;
 
-  @media (max-width: 1024px) {
-    font-size: 15px;
-    line-height: 24px;
+    margin: 0;
+    color: #111712;
+    background: #f7f5ef;
+  }
+
+  /*
+   * Arabic uses Cairo; French uses Titillium Web. The other font stays second in
+   * the stack so Arabic quotations inside a French article (and vice versa) keep
+   * a script-appropriate face instead of dropping to a system font.
+   */
+  html[lang='ar'] {
+    --font-site: var(--font-cairo);
+  }
+
+  html[lang='fr'] {
+    --font-site: var(--font-titillium);
+  }
+
+  html[lang='ar'] body {
+    font-family: var(--font-cairo), var(--font-titillium), system-ui, sans-serif;
+  }
+
+  html[lang='fr'] body {
+    font-family: var(--font-titillium), var(--font-cairo), system-ui, sans-serif;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  h1 {
+    margin: 40px 0;
+    font-size: 64px;
+    line-height: 70px;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 24px 0;
+  }
+
+  a {
+    color: currentColor;
+  }
+
+  a:focus {
+    opacity: 0.8;
+    outline: none;
+  }
+
+  a:active {
+    opacity: 0.7;
+    outline: none;
+  }
+
+  svg {
+    vertical-align: middle;
   }
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-h1 {
-  margin: 40px 0;
-  font-size: 64px;
-  line-height: 70px;
-  font-weight: bold;
-
-  @media (max-width: 1024px) {
+@media (max-width: 1024px) {
+  h1 {
     margin: 24px 0;
     font-size: 42px;
     line-height: 42px;
   }
 
-  @media (max-width: 768px) {
-    font-size: 38px;
-    line-height: 38px;
-  }
-
-  @media (max-width: 400px) {
-    font-size: 32px;
-    line-height: 32px;
-  }
-}
-
-p {
-  margin: 24px 0;
-
-  @media (max-width: 1024px) {
+  p {
     margin: calc(var(--base) * 0.75) 0;
   }
 }
 
-a {
-  color: currentColor;
-
-  &:focus {
-    opacity: 0.8;
-    outline: none;
-  }
-
-  &:active {
-    opacity: 0.7;
-    outline: none;
+@media (max-width: 768px) {
+  h1 {
+    font-size: 38px;
+    line-height: 38px;
   }
 }
 
-svg {
-  vertical-align: middle;
+@media (max-width: 400px) {
+  h1 {
+    font-size: 32px;
+    line-height: 32px;
+  }
 }
 
 .article-shell {
@@ -95,12 +181,22 @@ svg {
   padding: 48px 24px 96px;
 }
 
+.article-surface {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #000;
+  color: #f5f5f5;
+}
+
 .article-page {
   --article-accent: #d9ab4a;
   --article-border: rgb(58, 58, 58);
   --article-muted: rgb(160, 160, 160);
 
   color-scheme: dark;
+  color: #f5f5f5;
 }
 
 .article-page__draft-badge {
@@ -436,76 +532,63 @@ svg {
   }
 }
 
-.home {
+.not-found {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  height: 100vh;
-  padding: 45px;
-  max-width: 1024px;
-  margin: 0 auto;
-  overflow: hidden;
+  justify-content: center;
+  gap: 12px;
+  min-height: 60vh;
+  padding: 48px 24px;
+  text-align: center;
+}
 
-  @media (max-width: 400px) {
-    padding: 24px;
-  }
+.not-found__code {
+  margin: 0;
+  color: rgb(120, 120, 120);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+}
 
-  .content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
+.not-found__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1.2;
+}
 
-    h1 {
-      text-align: center;
-    }
-  }
+.not-found__text {
+  max-width: 520px;
+  margin: 0;
+  color: #3a423b;
+}
 
-  .links {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.not-found__other {
+  margin: 8px 0 0;
+  font-size: 1.05rem;
+}
 
-    a {
-      text-decoration: none;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-    }
+.not-found__link {
+  margin-top: 8px;
+  padding: 8px 16px;
+  border: 1px solid #1f4f0c;
+  border-radius: 999px;
+  color: #0f2e04;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
 
-    .admin {
-      color: rgb(0, 0, 0);
-      background: rgb(1000, 1000, 1000);
-      border: 1px solid rgb(0, 0, 0);
-    }
+.not-found__link:hover {
+  background: #0f2e04;
+  color: #ffffff;
+}
 
-    .docs {
-      color: rgb(1000, 1000, 1000);
-      background: rgb(0, 0, 0);
-      border: 1px solid rgb(1000, 1000, 1000);
-    }
-  }
+.not-found__link--secondary {
+  margin-top: 0;
+  border-color: transparent;
+  color: #6b746c;
+}
 
-  .footer {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    @media (max-width: 1024px) {
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    .codeLink {
-      text-decoration: none;
-      padding: 0 0.5rem;
-      background: rgb(60, 60, 60);
-      border-radius: 4px;
-    }
-  }
+.not-found__link--secondary:hover {
+  background: transparent;
+  color: #111712;
 }

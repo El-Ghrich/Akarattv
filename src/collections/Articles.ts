@@ -55,7 +55,7 @@ export const Articles: CollectionConfig = {
           process.env.NEXT_PUBLIC_SERVER_URL ||
           (host ? `${protocol}://${host}` : 'http://localhost:3000')
 
-        return `${serverURL}/articles/${encodeURIComponent(data.slug)}?locale=${locale.code}&preview=1`
+        return `${serverURL}/${locale.code}/articles/${encodeURIComponent(data.slug)}?preview=1`
       },
     },
   },

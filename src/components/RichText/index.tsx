@@ -10,10 +10,9 @@ import Image from 'next/image'
 import React from 'react'
 
 import type { Article, Media } from '@/payload-types'
+import type { Locale } from '@/i18n/routing'
 
 type Direction = 'ltr' | 'rtl' | null | undefined
-
-type Locale = 'ar' | 'fr'
 
 /**
  * Lexical stores a direction per block node, but that value is inherited when
@@ -24,18 +23,16 @@ type Locale = 'ar' | 'fr'
  */
 const dir = (_node: { direction?: Direction }): 'auto' => 'auto'
 
-const localeQuery = (locale: Locale) => `?locale=${locale}`
-
 const articleHref = (reference: unknown, locale: Locale): string => {
   if (reference !== null && typeof reference === 'object') {
     const doc = reference as { id?: number | string; slug?: string | null }
 
-    if (doc.slug) return `/articles/${encodeURIComponent(doc.slug)}${localeQuery(locale)}`
-    if (doc.id !== undefined) return `/articles/${doc.id}${localeQuery(locale)}`
+    if (doc.slug) return `/${locale}/articles/${encodeURIComponent(doc.slug)}`
+    if (doc.id !== undefined) return `/${locale}/articles/${doc.id}`
   }
 
   if (typeof reference === 'number' || typeof reference === 'string') {
-    return `/articles/${encodeURIComponent(String(reference))}${localeQuery(locale)}`
+    return `/${locale}/articles/${encodeURIComponent(String(reference))}`
   }
 
   return '#'

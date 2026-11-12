@@ -1,0 +1,30 @@
+{
+  "Metadata": {
+    "title": "Akarattv",
+    "description": "أخبار وتحليلات من المغرب."
+  },
+  "Header": {
+    "siteName": "Akarattv",
+    "home": "الرئيسية",
+    "nav": "التنقل الرئيسي"
+  },
+  "LocaleSwitcher": {
+    "label": "تغيير اللغة",
+    "unavailable": "هذه الصفحة غير متوفرة بهذه اللغة"
+  },
+  "Home": {
+    "placeholder": "الموقع قيد الإنشاء."
+  },
+  "Article": {
+    "notFound": "المقال غير موجود"
+  },
+  "NotFound": {
+    "title": "الصفحة غير موجودة",
+    "text": "هذا المقال غير موجود أو تم حذفه.",
+    "unavailableTitle": "النسخة العربية غير متوفرة",
+    "unavailableText": "عذراً، هذا المقال غير متوفر باللغة العربية حالياً.",
+    "availableIn": "متوفر بالفرنسية:",
+    "readInOther": "اقرأ بالفرنسية",
+    "home": "العودة إلى الرئيسية"
+  }
+}

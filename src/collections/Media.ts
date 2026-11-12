@@ -33,8 +33,27 @@ export const Media: CollectionConfig = {
     delete: isAdmin,
   },
   upload: {
-    // Use the 400px derivative in the admin list instead of the full original.
-    adminThumbnail: 'thumbnail',
+    /**
+     * With a string `adminThumbnail`, Payload only selects the size's filename
+     * and rebuilds a `/api/media/file/...` URL for the admin list. That route
+     * does not exist when the S3 adapter has `disablePayloadAccessControl`
+     * enabled, so the thumbnail request 404s on Vercel. A function receives the
+     * selected document, so it can return the R2 URL produced by the storage
+     * adapter's `afterRead` hook instead.
+     */
+    adminThumbnail: ({ doc }) => {
+      const sizes = doc.sizes as
+        | null
+        | Record<string, { url?: null | string } | undefined>
+        | undefined
+
+      for (const name of ['thumbnail', 'small', 'medium', 'large']) {
+        const url = sizes?.[name]?.url
+        if (url) return url
+      }
+
+      return (doc.url as null | string | undefined) ?? null
+    },
     // Raster formats only. SVG is excluded because sharp cannot rasterise it,
     // so it would skip resizing and reach the CDN unprocessed.
     mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/avif'],

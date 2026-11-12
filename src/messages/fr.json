@@ -1,0 +1,30 @@
+{
+  "Metadata": {
+    "title": "Akarattv",
+    "description": "Actualités et analyses du Maroc."
+  },
+  "Header": {
+    "siteName": "Akarattv",
+    "home": "Accueil",
+    "nav": "Navigation principale"
+  },
+  "LocaleSwitcher": {
+    "label": "Changer de langue",
+    "unavailable": "Cette page n'est pas disponible dans cette langue"
+  },
+  "Home": {
+    "placeholder": "Le site est en cours de construction."
+  },
+  "Article": {
+    "notFound": "Article introuvable"
+  },
+  "NotFound": {
+    "title": "Page introuvable",
+    "text": "Cet article n'existe pas ou a été supprimé.",
+    "unavailableTitle": "Version française indisponible",
+    "unavailableText": "Désolé, cet article n'est pas encore disponible en français.",
+    "availableIn": "Disponible en arabe :",
+    "readInOther": "Lire en arabe",
+    "home": "Retour à l'accueil"
+  }
+}

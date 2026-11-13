@@ -10,6 +10,7 @@ import Image from 'next/image'
 import React from 'react'
 
 import type { Article, Media } from '@/payload-types'
+import { InfoIcon } from '@/components/icons'
 import type { Locale } from '@/i18n/routing'
 
 type Direction = 'ltr' | 'rtl' | null | undefined
@@ -152,6 +153,23 @@ export type RichTextProps = {
 export function RichText({ className, content, locale }: RichTextProps) {
   if (!content) return null
 
+  // Mirrors `getArticleHeadings`: every heading takes a number, so TOC anchors
+  // stay stable even when h4/h5 headings are hidden from the sidebar. The ids
+  // are computed from the source nodes instead of a render counter: Lexical
+  // keeps the converter closure between renders, and a counter would keep
+  // advancing for the same heading (and break hydration).
+  const headingIds = new WeakMap<object, number>()
+  const rootChildren = (content as { root?: { children?: unknown[] } }).root?.children ?? []
+  let headingCount = 0
+
+  for (const child of rootChildren) {
+    if (!child || typeof child !== 'object') continue
+    if ((child as { type?: string }).type !== 'heading') continue
+
+    headingCount += 1
+    headingIds.set(child, headingCount)
+  }
+
   const converters: JSXConvertersFunction = ({ defaultConverters }) => {
     const textConverter = defaultConverters.text
 
@@ -182,8 +200,13 @@ export function RichText({ className, content, locale }: RichTextProps) {
         const children = nodesToJSX({ nodes: node.children })
         // The article title owns the page's only <h1>. Clamp anything else.
         const tag = node.tag === 'h3' || node.tag === 'h4' || node.tag === 'h5' ? node.tag : 'h2'
+        const id = headingIds.get(node)
 
-        return React.createElement(tag, { dir: dir(node) }, children)
+        return React.createElement(
+          tag,
+          { dir: dir(node), ...(id ? { id: `section-${id}` } : {}) },
+          children,
+        )
       },
 
       quote: ({ node, nodesToJSX }) => {
@@ -323,13 +346,16 @@ export function RichText({ className, content, locale }: RichTextProps) {
               dir="auto"
               role="note"
             >
-              <span className="rich-text__infobox-label">{infoBoxLabel[variant][locale]}</span>
-              {fields.title ? (
-                <p className="rich-text__infobox-title">{fields.title}</p>
-              ) : null}
-              {paragraphs.map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
+              <InfoIcon className="rich-text__infobox-icon" />
+              <div className="rich-text__infobox-body">
+                <span className="rich-text__infobox-label">{infoBoxLabel[variant][locale]}</span>
+                {fields.title ? (
+                  <p className="rich-text__infobox-title">{fields.title}</p>
+                ) : null}
+                {paragraphs.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </div>
             </aside>
           )
         },

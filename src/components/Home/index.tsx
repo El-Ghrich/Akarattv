@@ -3,6 +3,7 @@ import React from 'react'
 
 import { ArrowIcon, CalendarIcon, MailCheckIcon, ShieldCheckIcon, TrendUpIcon } from '@/components/icons'
 import {
+  cardImageUrl,
   type HomeCard,
   type HomeContent,
   type HomeSection,
@@ -65,7 +66,7 @@ const CompactCard = ({ card, locale, small = false }: CompactCardProps) => (
         className="object-cover transition-transform duration-300 group-hover:scale-105"
         fill
         sizes={small ? '80px' : '96px'}
-        src={unsplashUrl(card.imageId, 400)}
+        src={cardImageUrl(card, 400)}
       />
     </div>
 
@@ -104,7 +105,7 @@ const StandardCard = ({ card, large = false, locale, sizes }: StandardCardProps)
         className="object-cover transition-transform duration-300 group-hover:scale-105"
         fill
         sizes={sizes}
-        src={unsplashUrl(card.imageId, large ? 1200 : 800)}
+        src={cardImageUrl(card, large ? 1200 : 800)}
       />
     </div>
 
@@ -208,7 +209,7 @@ const HeroZone = ({ content, locale }: { content: HomeContent; locale: Locale })
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           fill
           sizes="(min-width: 1024px) 66vw, 100vw"
-          src={unsplashUrl(featured.imageId, 1200)}
+          src={cardImageUrl(featured, 1200)}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-green-950 via-green-950/75 to-transparent" />
 
@@ -282,63 +283,69 @@ const LatestNews = ({ content, locale }: { content: HomeContent; locale: Locale 
   </section>
 )
 
-const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSection }) => (
-  <section aria-labelledby={`${section.id}-title`} className="pt-2" id={section.id}>
-    <SectionHeader
-      id={`${section.id}-title`}
-      locale={locale}
-      title={section.title}
-      viewAll={section.viewAll}
-    />
+const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSection }) => {
+  const hasCompact = section.compact.length > 0
 
-    <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
-      <div className="lg:col-span-8">
-        <StandardCard
-          card={section.featured}
-          large
-          locale={locale}
-          sizes="(min-width: 1024px) 66vw, 100vw"
-        />
+  return (
+    <section aria-labelledby={`${section.id}-title`} className="pt-2" id={section.id}>
+      <SectionHeader
+        id={`${section.id}-title`}
+        locale={locale}
+        title={section.title}
+        viewAll={section.viewAll}
+      />
+
+      <div
+        className={`grid grid-cols-1 items-stretch gap-6 ${
+          hasCompact ? 'lg:grid-cols-12' : ''
+        }`}
+      >
+        <div className={hasCompact ? 'lg:col-span-8' : undefined}>
+          <StandardCard
+            card={section.featured}
+            large
+            locale={locale}
+            sizes={hasCompact ? '(min-width: 1024px) 66vw, 100vw' : '100vw'}
+          />
+        </div>
+
+        {hasCompact ? (
+          <div className="flex flex-col justify-between gap-4 lg:col-span-4">
+            {section.compact.map((card) => (
+              <CompactCard card={card} key={card.title} locale={locale} small />
+            ))}
+          </div>
+        ) : null}
       </div>
+    </section>
+  )
+}
 
-      <div className="flex flex-col justify-between gap-4 lg:col-span-4">
-        {section.compact.map((card) => (
-          <CompactCard card={card} key={card.title} locale={locale} small />
-        ))}
-      </div>
-    </div>
-  </section>
-)
-
-const CityChips = ({ content, locale }: { content: HomeContent; locale: Locale }) => (
+const RegionChips = ({ content, locale }: { content: HomeContent; locale: Locale }) => (
   <section
-    aria-labelledby="cities-browse-title"
+    aria-labelledby="regions-browse-title"
     className="rounded-card border border-line bg-surface p-8 shadow-xs"
-    id="cities"
+    id="regions"
   >
     <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
       <div>
         <h2
           className="m-0 mb-1 font-headline text-h2 font-bold text-green-900"
-          id="cities-browse-title"
+          id="regions-browse-title"
         >
-          {content.cities.title}
+          {content.regions.title}
         </h2>
-        <p className="m-0 text-body-ui text-ink-500">{content.cities.description}</p>
+        <p className="m-0 text-body-ui text-ink-500">{content.regions.description}</p>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        {content.cities.items.map((city) => (
+        {content.regions.items.map((region) => (
           <a
-            className={`inline-flex items-center rounded-full px-6 py-2.5 font-headline text-body-ui font-bold shadow-xs transition-colors ${
-              city.active
-                ? 'border border-green-900 bg-green-900 text-gold-300'
-                : 'border border-line bg-surface text-ink-900 hover:border-gold-500 hover:bg-green-100 hover:text-green-900'
-            }`}
-            href={cardHref(locale, city.href)}
-            key={city.label}
+            className="inline-flex items-center rounded-full border border-line bg-surface px-6 py-2.5 font-headline text-body-ui font-bold text-ink-900 shadow-xs transition-colors hover:border-gold-500 hover:bg-green-100 hover:text-green-900"
+            href={cardHref(locale, region.href)}
+            key={region.href + region.label}
           >
-            <span>{city.label}</span>
+            <span>{region.label}</span>
           </a>
         ))}
       </div>
@@ -406,9 +413,9 @@ export const HomeSections = ({ content, locale }: HomeSectionsProps) => (
     {content.sections.map((section) => (
       <CategorySection key={section.id} locale={locale} section={section} />
     ))}
-    <CityChips content={content} locale={locale} />
+    <RegionChips content={content} locale={locale} />
     <NewsletterBand content={content} />
   </>
 )
 
-export { BrandHero, CityChips, HeroZone, LatestNews, NewsletterBand }
+export { BrandHero, HeroZone, LatestNews, NewsletterBand, RegionChips, StandardCard }

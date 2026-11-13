@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminOrEditor } from '@/access'
+import { revalidationTags } from '@/utilities/cacheTags'
 import { l } from '@/utilities/labels'
+import { revalidateContent } from '@/utilities/revalidate'
 
 export const Regions: CollectionConfig = {
   slug: 'regions',
@@ -18,6 +20,11 @@ export const Regions: CollectionConfig = {
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdmin,
+  },
+  // Regions are cached aggressively, so an edit must clear the tag explicitly.
+  hooks: {
+    afterChange: [() => revalidateContent(revalidationTags.region)],
+    afterDelete: [() => revalidateContent(revalidationTags.region)],
   },
   fields: [
     {

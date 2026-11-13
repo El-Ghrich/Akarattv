@@ -11,7 +11,12 @@ export type HomeCard = {
   cta?: string
   excerpt?: string
   href: string
-  imageId: string
+  /**
+   * Articles edited in Payload carry a ready R2 URL. Static editorial cards use
+   * one of the Unsplash ids below instead.
+   */
+  imageSrc?: string
+  imageId?: string
   meta: string
   title: string
 }
@@ -25,18 +30,20 @@ export type HomeSection = {
 }
 
 export type HomeContent = {
-  cities: {
-    description: string
-    items: (HomeLink & { active?: boolean })[]
-    title: string
-  }
   footer: {
-    columns: {
+    about: {
       links: HomeLink[]
       title: string
-    }[]
+    }
     copyright: string
     description: string
+    /** Column titles; the links come from Payload. */
+    policies: {
+      links: HomeLink[]
+      title: string
+    }
+    regionsTitle: string
+    sectionsTitle: string
     social: string[]
     tagline: string
   }
@@ -79,6 +86,11 @@ export type HomeContent = {
     privacy: string
     title: string
   }
+  regions: {
+    description: string
+    items: HomeLink[]
+    title: string
+  }
   sections: HomeSection[]
 }
 
@@ -107,68 +119,46 @@ const images = {
 }
 
 const ar: HomeContent = {
-  cities: {
-    description: 'اختر وجهتك العقارية للاطلاع على أحدث الصفقات، المشاريع، والتحليلات المحلية.',
-    items: [
-      { active: true, href: '#cities', label: 'الدار البيضاء' },
-      { href: '#cities', label: 'مراكش' },
-      { href: '#cities', label: 'طنجة' },
-      { href: '#cities', label: 'الرباط' },
-      { href: '#cities', label: 'أكادير' },
-      { href: '#cities', label: 'فاس' },
-    ],
-    title: 'تصفح حسب المدينة',
-  },
   footer: {
-    columns: [
-      {
-        links: [
-          { href: '#market', label: 'أخبار السوق' },
-          { href: '#latest-news', label: 'القوانين والتشريعات' },
-          { href: '#projects', label: 'المشاريع العقارية' },
-          { href: '#investment', label: 'الاستثمار وصناديق OPCI' },
-          { href: '#latest-news', label: 'التمويل والرهن العقاري' },
-          { href: '#latest-news', label: 'نصائح وأدلة الشراء' },
-        ],
-        title: 'الأقسام الإخبارية',
-      },
-      {
-        links: [
-          { href: '#cities', label: 'عقارات الدار البيضاء' },
-          { href: '#cities', label: 'عقارات الرباط وسلا' },
-          { href: '#cities', label: 'عقارات مراكش' },
-          { href: '#cities', label: 'عقارات طنجة وتطوان' },
-          { href: '#cities', label: 'عقارات أكادير وسوس' },
-          { href: '#cities', label: 'عقارات فاس ومكناس' },
-        ],
-        title: 'المدن والمناطق',
-      },
-      {
-        links: [
-          { href: '#footer', label: 'من نحن ومهمتنا' },
-          { href: '#footer', label: 'الفريق وهيئة التحرير' },
-          { href: '#footer', label: 'ميثاق الشرف الصحفي' },
-          { href: '#newsletter-section', label: 'الإعلان والرعايات' },
-          { href: '#footer', label: 'الوظائف والفرص' },
-        ],
-        title: 'عن المنصة',
-      },
-      {
-        links: [
-          { href: '#footer', label: 'اتصل بهيئة التحرير' },
-          { href: '#footer', label: 'سياسة الخصوصية' },
-          { href: '#footer', label: 'شروط الاستخدام' },
-          { href: '#footer', label: 'إخلاء المسؤولية المالية' },
-          { href: '#footer', label: 'خريطة الموقع' },
-        ],
-        title: 'السياسات والاتصال',
-      },
-    ],
+    about: {
+      links: [
+        { href: '#footer', label: 'من نحن ومهمتنا' },
+        { href: '#footer', label: 'الفريق وهيئة التحرير' },
+        { href: '#footer', label: 'ميثاق الشرف الصحفي' },
+        { href: '#newsletter-section', label: 'الإعلان والرعايات' },
+        { href: '#footer', label: 'الوظائف والفرص' },
+      ],
+      title: 'عن المنصة',
+    },
     copyright: 'جميع الحقوق محفوظة © 2026 منصة "عقارات تيفي" (Akarat TV).',
     description:
       'المنصة الإخبارية المستقلة الأولى المتخصصة في تغطية وتحليل أسواق العقار، التمويل، والتشريعات الاستثمارية في المغرب والعالم العربي برؤية مهنية رصينة.',
+    policies: {
+      links: [
+        { href: '#footer', label: 'اتصل بهيئة التحرير' },
+        { href: '#footer', label: 'سياسة الخصوصية' },
+        { href: '#footer', label: 'شروط الاستخدام' },
+        { href: '#footer', label: 'إخلاء المسؤولية المالية' },
+        { href: '#footer', label: 'خريطة الموقع' },
+      ],
+      title: 'السياسات والاتصال',
+    },
+    regionsTitle: 'المناطق',
+    sectionsTitle: 'الأقسام الإخبارية',
     social: ['LinkedIn', 'X (Twitter)', 'YouTube', 'Facebook'],
     tagline: 'تصميم تحريري رصين وموثوق',
+  },
+  regions: {
+    description: 'اختر جهتك للاطلاع على أحدث الصفقات، المشاريع، والتحليلات المحلية.',
+    items: [
+      { href: '/regions/casablanca-settat', label: 'الدار البيضاء - سطات' },
+      { href: '/regions/rabat-sale-kenitra', label: 'الرباط - سلا - القنيطرة' },
+      { href: '/regions/marrakech-safi', label: 'مراكش - أسفي' },
+      { href: '/regions/tanger-tetouan-al-hoceima', label: 'طنجة - تطوان - الحسيمة' },
+      { href: '/regions/fes-meknes', label: 'فاس - مكناس' },
+      { href: '/regions/souss-massa', label: 'سوس - ماسة' },
+    ],
+    title: 'تصفح حسب الجهة',
   },
   header: {
     homeLabel: 'الصفحة الرئيسية لعقارات تيفي',
@@ -435,69 +425,47 @@ const ar: HomeContent = {
 }
 
 const fr: HomeContent = {
-  cities: {
-    description:
-      'Choisissez votre destination immobilière pour découvrir les dernières transactions, les projets et les analyses locales.',
-    items: [
-      { active: true, href: '#cities', label: 'Casablanca' },
-      { href: '#cities', label: 'Marrakech' },
-      { href: '#cities', label: 'Tanger' },
-      { href: '#cities', label: 'Rabat' },
-      { href: '#cities', label: 'Agadir' },
-      { href: '#cities', label: 'Fès' },
-    ],
-    title: 'Parcourir par ville',
-  },
   footer: {
-    columns: [
-      {
-        links: [
-          { href: '#market', label: 'Actualités du marché' },
-          { href: '#latest-news', label: 'Lois et réglementations' },
-          { href: '#projects', label: 'Projets immobiliers' },
-          { href: '#investment', label: 'Investissement et fonds OPCI' },
-          { href: '#latest-news', label: 'Financement et hypothèque' },
-          { href: '#latest-news', label: "Conseils et guides d'achat" },
-        ],
-        title: 'Rubriques',
-      },
-      {
-        links: [
-          { href: '#cities', label: 'Immobilier à Casablanca' },
-          { href: '#cities', label: 'Immobilier à Rabat et Salé' },
-          { href: '#cities', label: 'Immobilier à Marrakech' },
-          { href: '#cities', label: 'Immobilier à Tanger et Tétouan' },
-          { href: '#cities', label: 'Immobilier à Agadir et Souss' },
-          { href: '#cities', label: 'Immobilier à Fès et Meknès' },
-        ],
-        title: 'Villes et régions',
-      },
-      {
-        links: [
-          { href: '#footer', label: 'Qui sommes-nous et notre mission' },
-          { href: '#footer', label: "L'équipe et la rédaction" },
-          { href: '#footer', label: 'Charte déontologique' },
-          { href: '#newsletter-section', label: 'Publicité et partenariats' },
-          { href: '#footer', label: 'Carrières et opportunités' },
-        ],
-        title: 'À propos',
-      },
-      {
-        links: [
-          { href: '#footer', label: 'Contacter la rédaction' },
-          { href: '#footer', label: 'Politique de confidentialité' },
-          { href: '#footer', label: "Conditions d'utilisation" },
-          { href: '#footer', label: 'Avertissement financier' },
-          { href: '#footer', label: 'Plan du site' },
-        ],
-        title: 'Politiques et contact',
-      },
-    ],
+    about: {
+      links: [
+        { href: '#footer', label: 'Qui sommes-nous et notre mission' },
+        { href: '#footer', label: "L'équipe et la rédaction" },
+        { href: '#footer', label: 'Charte déontologique' },
+        { href: '#newsletter-section', label: 'Publicité et partenariats' },
+        { href: '#footer', label: 'Carrières et opportunités' },
+      ],
+      title: 'À propos',
+    },
     copyright: 'Tous droits réservés © 2026 Akarat TV.',
     description:
       "Le premier média indépendant spécialisé dans la couverture et l'analyse des marchés immobiliers, du financement et des réglementations d'investissement au Maroc et dans le monde arabe, avec une approche professionnelle rigoureuse.",
+    policies: {
+      links: [
+        { href: '#footer', label: 'Contacter la rédaction' },
+        { href: '#footer', label: 'Politique de confidentialité' },
+        { href: '#footer', label: "Conditions d'utilisation" },
+        { href: '#footer', label: 'Avertissement financier' },
+        { href: '#footer', label: 'Plan du site' },
+      ],
+      title: 'Politiques et contact',
+    },
+    regionsTitle: 'Régions',
+    sectionsTitle: 'Rubriques',
     social: ['LinkedIn', 'X (Twitter)', 'YouTube', 'Facebook'],
     tagline: 'Un design éditorial sobre et fiable',
+  },
+  regions: {
+    description:
+      'Choisissez votre région pour découvrir les dernières transactions, les projets et les analyses locales.',
+    items: [
+      { href: '/regions/casablanca-settat', label: 'Casablanca-Settat' },
+      { href: '/regions/rabat-sale-kenitra', label: 'Rabat-Salé-Kénitra' },
+      { href: '/regions/marrakech-safi', label: 'Marrakech-Safi' },
+      { href: '/regions/tanger-tetouan-al-hoceima', label: 'Tanger-Tétouan-Al Hoceïma' },
+      { href: '/regions/fes-meknes', label: 'Fès-Meknès' },
+      { href: '/regions/souss-massa', label: 'Souss-Massa' },
+    ],
+    title: 'Parcourir par région',
   },
   header: {
     homeLabel: "Page d'accueil d'Akarat TV",
@@ -774,6 +742,13 @@ const fr: HomeContent = {
 
 export const homeContent: Record<Locale, HomeContent> = { ar, fr }
 
+/** Used when a Payload article has no hero image, so cards never render empty. */
+export const homeFallbackImageId = images.city
+
 /** Unsplash source at a width large enough for its card. Next optimises from here. */
 export const unsplashUrl = (id: string, width: number): string =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=80`
+
+/** CMS cards use their R2 URL; static editorial cards fall back to Unsplash. */
+export const cardImageUrl = (card: Pick<HomeCard, 'imageId' | 'imageSrc'>, width: number): string =>
+  card.imageSrc ?? unsplashUrl(card.imageId ?? homeFallbackImageId, width)

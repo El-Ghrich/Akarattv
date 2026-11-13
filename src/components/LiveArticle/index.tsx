@@ -5,14 +5,16 @@ import React from 'react'
 
 import type { Article } from '@/payload-types'
 
-import { ArticleView } from '@/components/ArticleView'
+import { ArticleView, type ArticleTeaser } from '@/components/ArticleView'
 import type { Locale } from '@/i18n/routing'
 
 export type LiveArticleProps = {
   initialArticle: Article
+  latest: ArticleTeaser[]
   locale: Locale
   preview: boolean
   serverURL: string
+  shareUrl: string
 }
 
 /**
@@ -20,14 +22,29 @@ export type LiveArticleProps = {
  * article as the editor types. Outside the admin iframe it simply renders the
  * server-fetched article.
  */
-export function LiveArticle({ initialArticle, locale, preview, serverURL }: LiveArticleProps) {
+export function LiveArticle({
+  initialArticle,
+  latest,
+  locale,
+  preview,
+  serverURL,
+  shareUrl,
+}: LiveArticleProps) {
   const { data } = useLivePreview<Article>({
     depth: 2,
     initialData: initialArticle,
     serverURL,
   })
 
-  return <ArticleView article={data} locale={locale} preview={preview} />
+  return (
+    <ArticleView
+      article={data}
+      latest={latest}
+      locale={locale}
+      preview={preview}
+      shareUrl={shareUrl}
+    />
+  )
 }
 
 export default LiveArticle

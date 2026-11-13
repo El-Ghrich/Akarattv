@@ -190,6 +190,17 @@
   color: #f5f5f5;
 }
 
+/* Subtle architectural dot grid used by the newsletter bands. */
+.pattern-architectural {
+  background-image:
+    radial-gradient(rgb(201 162 75 / 0.12) 1px, transparent 1px),
+    radial-gradient(rgb(201 162 75 / 0.08) 1px, transparent 1px);
+  background-position:
+    0 0,
+    16px 16px;
+  background-size: 32px 32px;
+}
+
 .article-page {
   --article-accent: #d9ab4a;
   --article-border: rgb(58, 58, 58);
@@ -592,3 +603,378 @@
   background: transparent;
   color: #111712;
 }
+
+/* --------------------------------------------------------------------------
+ * Article page — light editorial theme
+ *
+ * The structure is composed with Tailwind utilities. These rules only cover
+ * the HTML that Lexical generates, where utilities cannot be attached.
+ * -------------------------------------------------------------------------- */
+
+.article-content {
+  overflow-wrap: break-word;
+  color: var(--color-ink-900);
+  font-size: var(--text-body-article);
+  line-height: 1.9;
+}
+
+.article-content > :first-child {
+  margin-top: 0;
+}
+
+.article-content > :last-child {
+  margin-bottom: 0;
+}
+
+.article-content p {
+  margin: 0 0 1.5em;
+}
+
+/* Standfirst: the first paragraph of the body is the lead paragraph. */
+.article-content > p:first-child {
+  margin: 1rem 0 1.75rem;
+  padding-inline-start: 1rem;
+  border-inline-start: 4px solid var(--color-gold-500);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.9;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5 {
+  scroll-margin-top: 7rem;
+  color: var(--color-green-900);
+  font-family: var(--font-headline);
+  font-weight: 700;
+}
+
+.article-content h2 {
+  margin: 2.75rem 0 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 26px;
+  line-height: 1.45;
+}
+
+.article-content h3 {
+  margin: 2rem 0 0.75rem;
+  color: var(--color-green-800);
+  font-size: 21px;
+  line-height: 1.5;
+}
+
+.article-content h4 {
+  margin: 1.6em 0 0.5em;
+  font-size: 1.2rem;
+  line-height: 1.55;
+}
+
+.article-content h5 {
+  margin: 1.4em 0 0.4em;
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.article-content strong {
+  font-weight: 700;
+}
+
+.article-content a {
+  color: var(--color-green-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.article-content a:hover {
+  color: var(--color-green-900);
+}
+
+.article-content ul,
+.article-content ol {
+  margin: 0 0 1.5em;
+  padding-inline-start: 1.5em;
+}
+
+.article-content ul {
+  list-style: disc;
+}
+
+.article-content ol {
+  list-style: decimal;
+}
+
+.article-content li {
+  margin: 0.4em 0;
+  padding-inline-start: 0.25em;
+}
+
+.article-content li::marker {
+  color: var(--color-gold-700);
+  font-weight: 700;
+}
+
+.article-content li > p {
+  margin: 0;
+}
+
+.article-content blockquote {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-inline-start: 4px solid var(--color-gold-500);
+  border-start-end-radius: var(--radius-card);
+  border-end-end-radius: var(--radius-card);
+  background: rgb(255 255 255 / 0.7);
+  color: var(--color-ink-900);
+}
+
+.article-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.article-content hr {
+  margin: 2.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.article-content code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--color-green-100);
+  color: var(--color-green-900);
+  font-size: 0.9em;
+}
+
+/* Pull quote block (Payload's custom block). */
+.article-content .rich-text__pullquote {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-inline-start: 4px solid var(--color-gold-500);
+  border-start-end-radius: var(--radius-card);
+  border-end-end-radius: var(--radius-card);
+  background: rgb(255 255 255 / 0.7);
+}
+
+.article-content .rich-text__pullquote blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-green-900);
+  font-family: var(--font-headline);
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
+.article-content .rich-text__pullquote figcaption {
+  margin-top: 0.75rem;
+}
+
+.article-content .rich-text__pullquote cite {
+  display: block;
+  color: var(--color-gold-700);
+  font-family: var(--font-headline);
+  font-size: var(--text-meta);
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* Inline body images. */
+.article-content .rich-text__figure {
+  margin: 2rem 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.article-content .rich-text__figure img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.article-content .rich-text__figure figcaption {
+  margin: 0;
+  padding: 0.75rem;
+  border-top: 1px solid var(--color-line);
+  color: var(--color-ink-500);
+  font-size: var(--text-meta);
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Key-facts box (Payload's custom block). */
+.article-content .rich-text__infobox {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border: 1px solid rgb(31 79 12 / 0.2);
+  border-radius: var(--radius-card);
+  background: var(--color-green-100);
+  color: var(--color-green-950);
+}
+
+.article-content .rich-text__infobox-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  color: var(--color-green-800);
+}
+
+.article-content .rich-text__infobox-body {
+  min-width: 0;
+}
+
+.article-content .rich-text__infobox-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-green-700);
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.article-content .rich-text__infobox-title {
+  margin: 0 0 0.5rem;
+  color: var(--color-green-900);
+  font-family: var(--font-headline);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.article-content .rich-text__infobox p {
+  margin: 0 0 0.5rem;
+  color: var(--color-ink-700);
+  font-size: var(--text-body-ui);
+  line-height: 1.7;
+}
+
+.article-content .rich-text__infobox p:last-child {
+  margin-bottom: 0;
+}
+
+/* Inline related-article card (Payload's custom block). */
+.article-content .rich-text__related {
+  margin: 2rem 0;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.article-content .rich-text__related-label {
+  color: var(--color-gold-700);
+}
+
+.article-content .rich-text__related a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.article-content .rich-text__related-title {
+  color: var(--color-ink-900);
+}
+
+.article-content .rich-text__related-excerpt {
+  color: var(--color-ink-500);
+}
+
+/* Responsive video. */
+.article-content .rich-text__video {
+  margin: 2rem 0;
+}
+
+.article-content .rich-text__video-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-card);
+  background: var(--color-green-950);
+}
+
+.article-content .rich-text__video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Tables inside the body. */
+.article-content table {
+  width: 100%;
+  margin: 2rem 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-collapse: collapse;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  font-size: var(--text-body-ui);
+}
+
+.article-content thead {
+  background: var(--color-green-900);
+  color: #ffffff;
+}
+
+.article-content th {
+  padding: 0.875rem;
+  border-bottom: 1px solid var(--color-green-800);
+  color: #ffffff;
+  font-family: var(--font-headline);
+  font-size: var(--text-meta);
+  font-weight: 700;
+  text-align: start;
+}
+
+.article-content td {
+  padding: 0.875rem;
+  border-bottom: 1px solid var(--color-line);
+  color: var(--color-ink-900);
+  text-align: start;
+}
+
+.article-content tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.article-content tbody tr:nth-child(even) {
+  background: rgb(247 245 239 / 0.55);
+}
+
+@media (max-width: 640px) {
+  .article-content {
+    font-size: 17px;
+  }
+
+  .article-content > p:first-child {
+    font-size: 18px;
+  }
+
+  .article-content h2 {
+    font-size: 24px;
+  }
+
+  .article-content h3 {
+    font-size: 20px;
+  }
+
+  .article-content .rich-text__pullquote blockquote {
+    font-size: 19px;
+  }
+}
+

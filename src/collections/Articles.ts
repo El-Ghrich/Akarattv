@@ -1,7 +1,9 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminOrEditor } from '@/access'
+import { revalidationTags } from '@/utilities/cacheTags'
 import { slugify } from '@/utilities/slugify'
 import { l } from '@/utilities/labels'
+import { revalidateContent } from '@/utilities/revalidate'
 
 /**
  * Returns the id of a relationship value, whether it was submitted as a raw id
@@ -112,6 +114,8 @@ export const Articles: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [() => revalidateContent(revalidationTags.article)],
+    afterDelete: [() => revalidateContent(revalidationTags.article)],
   },
   fields: [
     {

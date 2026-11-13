@@ -18,6 +18,26 @@
   "Article": {
     "notFound": "Article introuvable"
   },
+  "Category": {
+    "breadcrumbLabel": "Fil d'Ariane",
+    "home": "Accueil",
+    "notFound": "Catégorie introuvable",
+    "empty": "Aucun article publié dans cette catégorie pour le moment.",
+    "articleCount": "{count, plural, =0 {Aucun article} one {# article} other {# articles}}",
+    "pagination": "Pagination",
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
+  "Region": {
+    "breadcrumbLabel": "Fil d'Ariane",
+    "home": "Accueil",
+    "notFound": "Région introuvable",
+    "empty": "Aucun article publié dans cette région pour le moment.",
+    "articleCount": "{count, plural, =0 {Aucun article} one {# article} other {# articles}}",
+    "pagination": "Pagination",
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
   "NotFound": {
     "title": "Page introuvable",
     "text": "Cet article n'existe pas ou a été supprimé.",

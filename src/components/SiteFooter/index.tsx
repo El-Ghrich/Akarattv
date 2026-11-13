@@ -3,10 +3,11 @@ import React from 'react'
 
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { GlobeIcon, PlayIcon } from '@/components/icons'
-import { homeContent } from '@/content/home'
+import { homeContent, type HomeLink } from '@/content/home'
 import type { LocaleAlternate } from '@/i18n/alternates'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
+import { getFooterNav } from '@/utilities/content'
 
 export type SiteFooterProps = {
   alternates: LocaleAlternate[]
@@ -26,9 +27,19 @@ const socialGlyphs = (index: number) => {
   }
 }
 
-export function SiteFooter({ alternates, locale }: SiteFooterProps) {
+export async function SiteFooter({ alternates, locale }: SiteFooterProps) {
   const content = homeContent[locale]
   const footer = content.footer
+  const nav = await getFooterNav(locale)
+
+  // Categories and regions come from Payload; the two editorial columns stay
+  // static. A collection with no published docs simply loses its column.
+  const columns: { links: HomeLink[]; title: string }[] = [
+    { links: nav.sections, title: footer.sectionsTitle },
+    { links: nav.regions, title: footer.regionsTitle },
+    footer.about,
+    footer.policies,
+  ].filter((column) => column.links.length > 0)
 
   return (
     <footer
@@ -39,7 +50,6 @@ export function SiteFooter({ alternates, locale }: SiteFooterProps) {
         <div className="grid grid-cols-1 gap-10 border-b border-green-900 pb-12 md:grid-cols-2 lg:grid-cols-6">
           <div className="flex flex-col gap-4 lg:col-span-2">
             <Link aria-label={content.header.homeLabel} href="/" locale={locale}>
-              <span className="flex h-12 w-fit items-center justify-center rounded border border-gold-500/40 bg-surface/95 px-2.5 py-1.5">
                 <Image
                   alt={content.header.siteName}
                   className="h-9 w-auto"
@@ -47,7 +57,7 @@ export function SiteFooter({ alternates, locale }: SiteFooterProps) {
                   src="/logo.png"
                   width={742}
                 />
-              </span>
+
             </Link>
 
             <p className="m-0 max-w-sm text-body-ui leading-relaxed text-ink-300">
@@ -68,7 +78,7 @@ export function SiteFooter({ alternates, locale }: SiteFooterProps) {
             </div>
           </div>
 
-          {footer.columns.map((column) => (
+          {columns.map((column) => (
             <div className="flex flex-col gap-3" key={column.title}>
               <h3 className="mb-1 font-headline text-body-ui font-bold text-gold-400">
                 {column.title}

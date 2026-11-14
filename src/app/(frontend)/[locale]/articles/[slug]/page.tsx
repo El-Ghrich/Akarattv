@@ -7,12 +7,20 @@ import { getPayload } from 'payload'
 import React from 'react'
 
 import config from '@/payload.config'
+import { JsonLd } from '@/components/JsonLd'
 import { LiveArticle } from '@/components/LiveArticle'
 import { getPathname } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
 import { getArticleAlternates } from '@/utilities/articleAlternates'
 import { getArticle, getLatestArticles } from '@/utilities/content'
-import { decodeSlug } from '@/utilities/urls'
+import {
+  alternateLanguages,
+  breadcrumbJsonLd,
+  newsArticleJsonLd,
+  openGraphLocale,
+  siteName,
+} from '@/utilities/seo'
+import { articlePath, categoryPath, decodeSlug } from '@/utilities/urls'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>
@@ -34,33 +42,49 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
   if (!article) {
     const t = await getTranslations({ locale, namespace: 'Article' })
 
-    return { title: t('notFound') }
+    return {
+      robots: preview ? { follow: false, index: false } : undefined,
+      title: t('notFound'),
+    }
   }
 
   const routeSlug = article.slug ?? decodeSlug(rawSlug)
   const alternates = await getArticleAlternates(article.id, routeSlug, locale)
-
-  const languages: Record<string, string> = {}
-  for (const alternate of alternates) {
-    if (alternate.href) {
-      languages[alternate.locale] = getPathname({
-        href: alternate.href,
-        locale: alternate.locale,
-      })
-    }
-  }
+  const path = getPathname({
+    href: `/articles/${encodeURIComponent(routeSlug)}`,
+    locale,
+  })
+  const category = typeof article.category === 'object' ? article.category : null
+  const author = typeof article.author === 'object' ? article.author : null
 
   return {
     alternates: {
-      canonical: getPathname({
-        href: `/articles/${encodeURIComponent(routeSlug)}`,
-        locale,
-      }),
-      languages,
+      canonical: path,
+      languages: alternateLanguages(alternates),
+      types: {
+        'application/rss+xml': `/${locale}/rss.xml`,
+      },
     },
     description: article.excerpt,
+    openGraph: {
+      authors: author ? [author.name] : undefined,
+      description: article.excerpt,
+      locale: openGraphLocale(locale),
+      modifiedTime: article.updatedAt,
+      publishedTime: article.publishedAt ?? article.createdAt,
+      section: category?.title ?? undefined,
+      siteName: siteName(locale),
+      title: article.title,
+      type: 'article',
+      url: path,
+    },
     robots: preview ? { follow: false, index: false } : undefined,
     title: article.title,
+    twitter: {
+      card: 'summary_large_image',
+      description: article.excerpt,
+      title: article.title,
+    },
   }
 }
 
@@ -85,6 +109,14 @@ export default async function ArticlePage({ params, searchParams }: PageProps) {
   if (!article) notFound()
 
   const latest = await getLatestArticles(locale, article.id)
+  const t = await getTranslations({ locale, namespace: 'Article' })
+  const path = articlePath(article.slug ?? slug)
+  const category = typeof article.category === 'object' ? article.category : null
+  const breadcrumbs = [
+    { name: t('home'), path: `/${locale}` },
+    ...(category ? [{ name: category.title, path: `/${locale}${categoryPath(category.slug)}` }] : []),
+    { name: article.title, path: `/${locale}${path}` },
+  ]
 
   const host = headers.get('host')
   const protocol = headers.get('x-forwarded-proto') ?? 'http'
@@ -96,6 +128,12 @@ export default async function ArticlePage({ params, searchParams }: PageProps) {
 
   return (
     <main className="mx-auto w-full max-w-content flex-1 px-4 py-8 sm:px-6">
+      <JsonLd
+        data={[
+          newsArticleJsonLd(article, locale, path),
+          breadcrumbJsonLd(breadcrumbs),
+        ]}
+      />
       <LiveArticle
         initialArticle={article}
         latest={latest}

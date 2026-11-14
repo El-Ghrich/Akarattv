@@ -22,8 +22,11 @@ export async function revalidateContent(tags: readonly string[] = []): Promise<v
     }
 
     revalidatePath('/', 'layout')
-  } catch {
+  } catch (error) {
     // Outside a Next.js request (seed scripts, migrations) there is nothing to
-    // invalidate. The next request will read from the database as usual.
+    // invalidate. Inside one, a failure is real and should not be silent.
+    if (process.env.NEXT_RUNTIME) {
+      console.warn('[revalidate] cache invalidation failed:', error)
+    }
   }
 }

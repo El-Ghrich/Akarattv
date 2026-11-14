@@ -21,6 +21,7 @@ import {
   UnorderedListFeature,
   UploadFeature,
 } from '@payloadcms/richtext-lexical'
+import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { ar } from '@payloadcms/translations/languages/ar'
 import { en } from '@payloadcms/translations/languages/en'
@@ -41,6 +42,10 @@ import { PullQuoteBlock } from './blocks/PullQuoteBlock'
 import { RelatedArticleBlock } from './blocks/RelatedArticleBlock'
 import { YouTubeBlock } from './blocks/YouTubeBlock'
 import { InfoBoxBlock } from './blocks/InfoBoxBlock'
+import { isAdmin, isAdminOrEditor } from './access'
+import { revalidationTags } from './utilities/cacheTags'
+import { l } from './utilities/labels'
+import { revalidateContent } from './utilities/revalidate'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -139,6 +144,35 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
+  /**
+   * Scheduled publishing is Payload's job queue: a save in the admin writes a
+   * `schedulePublish` job row, and a worker applies it when its date arrives.
+   * Something therefore has to pick jobs up:
+   *
+   * - Vercel: `vercel.json` calls `/api/payload-jobs/run` every minute.
+   * - Long-lived Node host (Docker/VPS): set `PAYLOAD_JOBS_AUTORUN=true` and
+   *   Payload runs the queue on its own timer.
+   *
+   * `autoRun` is opt-in because starting timers during `next build` would hang
+   * the build.
+   */
+  jobs: {
+    access: {
+      cancel: isAdminOrEditor,
+      queue: isAdminOrEditor,
+      // A cron request carries no session, so it authenticates with the
+      // CRON_SECRET bearer token instead. Editors can also trigger a run
+      // manually while logged into the admin.
+      run: ({ req }) => {
+        if (isAdminOrEditor({ req })) return true
+
+        const secret = process.env.CRON_SECRET
+
+        return Boolean(secret) && req.headers.get('authorization') === `Bearer ${secret}`
+      },
+    },
+    ...(process.env.PAYLOAD_JOBS_AUTORUN === 'true' ? { autoRun: [{ cron: '* * * * *' }] } : {}),
+  },
   sharp,
   plugins: [
     s3Storage({
@@ -175,6 +209,43 @@ export default buildConfig({
         credentials: {
           accessKeyId: r2.accessKeyID,
           secretAccessKey: r2.secretAccessKey,
+        },
+      },
+    }),
+    /**
+     * Editors keep old URLs working after a slug change. The `from` value is
+     * matched verbatim against the request path, so it includes the language
+     * prefix (`/ar/articles/old-slug`). The proxy resolves these rows before
+     * next-intl touches the URL and answers with a real 301.
+     */
+    redirectsPlugin({
+      collections: ['articles', 'categories', 'regions'],
+      redirectTypes: ['301', '302', '308'],
+      overrides: {
+        labels: {
+          singular: l('Redirect', 'Redirection', 'تحويل'),
+          plural: l('Redirects', 'Redirections', 'التحويلات'),
+        },
+        admin: {
+          useAsTitle: 'from',
+          defaultColumns: ['from', 'to.type', 'type', 'updatedAt'],
+          group: l('Content', 'Contenu', 'المحتوى'),
+          description: l(
+            'Enter the full old path, including the language prefix, for example /ar/articles/old-slug.',
+            'Saisissez l’ancien chemin complet, préfixe de langue compris, par exemple /fr/articles/ancien-slug.',
+            'أدخل المسار القديم كاملاً مع بادئة اللغة، مثال: /ar/articles/الرابط-القديم.',
+          ),
+        },
+        access: {
+          // The proxy reads this collection anonymously through the REST API.
+          read: () => true,
+          create: isAdminOrEditor,
+          update: isAdminOrEditor,
+          delete: isAdmin,
+        },
+        hooks: {
+          afterChange: [() => revalidateContent(revalidationTags.redirect)],
+          afterDelete: [() => revalidateContent(revalidationTags.redirect)],
         },
       },
     }),

@@ -4,11 +4,13 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
+import { JsonLd } from '@/components/JsonLd'
 import { StandardCard } from '@/components/Home'
 import { HomeIcon } from '@/components/icons'
 import { getPathname } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
 import { getRegionAlternates, getRegionPage } from '@/utilities/content'
+import { alternateLanguages, breadcrumbJsonLd, openGraphLocale, siteName } from '@/utilities/seo'
 import { decodeSlug, regionPath } from '@/utilities/urls'
 
 type PageProps = {
@@ -46,7 +48,7 @@ const paginationWindow = (page: number, totalPages: number): PageItem[] => {
   return items
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { locale, slug: rawSlug } = await params
 
   if (!hasLocale(routing.locales, locale)) return {}
@@ -59,27 +61,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return { title: t('notFound') }
   }
 
+  const t = await getTranslations({ locale, namespace: 'Region' })
+  const query = await searchParams
+  const page = parsePage(first(query.page))
   const alternates = await getRegionAlternates(data.region.id, data.region.slug, locale)
-  const languages: Record<string, string> = {}
-
-  for (const alternate of alternates) {
-    if (alternate.href) {
-      languages[alternate.locale] = getPathname({
-        href: alternate.href,
-        locale: alternate.locale,
-      })
-    }
-  }
+  const basePath = getPathname({ href: regionPath(data.region.slug), locale })
+  const path = page > 1 ? `${basePath}?page=${page}` : basePath
+  const description = t('metaDescription', { name: data.region.name })
 
   return {
     alternates: {
-      canonical: getPathname({
-        href: regionPath(data.region.slug),
-        locale,
-      }),
-      languages,
+      canonical: path,
+      languages: alternateLanguages(alternates),
+      types: {
+        'application/rss+xml': `/${locale}/rss.xml`,
+      },
+    },
+    description,
+    openGraph: {
+      description,
+      locale: openGraphLocale(locale),
+      siteName: siteName(locale),
+      title: data.region.name,
+      type: 'website',
+      url: path,
     },
     title: data.region.name,
+    twitter: {
+      card: 'summary_large_image',
+      description,
+      title: data.region.name,
+    },
   }
 }
 
@@ -104,6 +116,12 @@ export default async function RegionPage({ params, searchParams }: PageProps) {
 
   return (
     <main className="mx-auto w-full max-w-content flex-1 px-4 py-8 sm:px-6">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: t('home'), path: `/${locale}` },
+          { name: data.region.name, path: `/${locale}${basePath}` },
+        ])}
+      />
       <nav aria-label={t('breadcrumbLabel')} className="mb-8">
         <ol className="flex min-w-0 flex-wrap items-center gap-2 font-semibold text-meta text-ink-500">
           <li>

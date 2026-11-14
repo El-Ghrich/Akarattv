@@ -1,6 +1,8 @@
 import type { CollectionConfig, ImageUploadFormatOptions } from 'payload'
 import { isAdmin, isAdminOrEditor } from '@/access'
+import { revalidationTags } from '@/utilities/cacheTags'
 import { l } from '@/utilities/labels'
+import { revalidateContent } from '@/utilities/revalidate'
 
 /**
  * Every generated derivative is WebP.
@@ -31,6 +33,11 @@ export const Media: CollectionConfig = {
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdmin,
+  },
+  // Media is embedded in the cached article/home/category/region documents.
+  hooks: {
+    afterChange: [() => revalidateContent(revalidationTags.media)],
+    afterDelete: [() => revalidateContent(revalidationTags.media)],
   },
   upload: {
     /**

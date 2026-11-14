@@ -75,6 +75,14 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(dirname),
   },
+  /**
+   * The `opengraph-image` routes read the self-hosted Cairo file from
+   * `src/fonts` at runtime. Tracing usually detects `readFile(join(...))`, but
+   * a serverless bundle is unforgiving, so the font is included explicitly.
+   */
+  outputFileTracingIncludes: {
+    '/**/opengraph-image': ['./src/fonts/*.ttf'],
+  },
 }
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')

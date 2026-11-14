@@ -5,10 +5,17 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
+import { JsonLd } from '@/components/JsonLd'
 import { SiteFooter } from '@/components/SiteFooter'
 import { SiteHeader } from '@/components/SiteHeader'
 import { routing } from '@/i18n/routing'
 import { getLayoutChrome } from '@/utilities/layoutChrome'
+import {
+  organizationJsonLd,
+  openGraphLocale,
+  siteName,
+  websiteJsonLd,
+} from '@/utilities/seo'
 import { getServerURL } from '@/utilities/serverURL'
 
 import '../styles.css'
@@ -53,11 +60,26 @@ export async function generateMetadata({
 
   const t = await getTranslations({ locale, namespace: 'Metadata' })
   const serverURL = getServerURL()
+  const description = t('description')
+  const title = t('title')
 
   return {
-    description: t('description'),
+    description,
     metadataBase: serverURL ? new URL(serverURL) : undefined,
-    title: t('title'),
+    openGraph: {
+      description,
+      locale: openGraphLocale(locale),
+      siteName: siteName(locale),
+      title,
+      type: 'website',
+      url: `/${locale}`,
+    },
+    title: { default: title, template: `%s | ${title}` },
+    twitter: {
+      card: 'summary_large_image',
+      description,
+      title,
+    },
   }
 }
 
@@ -75,6 +97,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       lang={locale}
     >
       <body className="flex min-h-screen flex-col bg-canvas text-ink-900 antialiased">
+        <JsonLd data={[organizationJsonLd(), websiteJsonLd(locale)]} />
         <NextIntlClientProvider>
           <SiteHeader alternates={alternates} locale={locale} newsletterHref={newsletterHref} />
           {children}

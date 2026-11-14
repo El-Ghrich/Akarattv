@@ -16,11 +16,13 @@
     "placeholder": "الموقع قيد الإنشاء."
   },
   "Article": {
+    "home": "الرئيسية",
     "notFound": "المقال غير موجود"
   },
   "Category": {
     "breadcrumbLabel": "مسار التصفح",
     "home": "الرئيسية",
+    "metaDescription": "أحدث المقالات والتحليلات في قسم {name}.",
     "notFound": "التصنيف غير موجود",
     "empty": "لا توجد مقالات منشورة في هذا التصنيف بعد.",
     "articleCount": "{count, plural, =0 {لا مقالات} one {مقال واحد} other {# مقالات}}",
@@ -31,6 +33,7 @@
   "Region": {
     "breadcrumbLabel": "مسار التصفح",
     "home": "الرئيسية",
+    "metaDescription": "أحدث الأخبار والتحليلات من جهة {name}.",
     "notFound": "الجهة غير موجودة",
     "empty": "لا توجد مقالات منشورة في هذه الجهة بعد.",
     "articleCount": "{count, plural, =0 {لا مقالات} one {مقال واحد} other {# مقالات}}",

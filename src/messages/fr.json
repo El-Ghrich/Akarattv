@@ -16,11 +16,13 @@
     "placeholder": "Le site est en cours de construction."
   },
   "Article": {
+    "home": "Accueil",
     "notFound": "Article introuvable"
   },
   "Category": {
     "breadcrumbLabel": "Fil d'Ariane",
     "home": "Accueil",
+    "metaDescription": "Les derniers articles et analyses de la rubrique {name}.",
     "notFound": "Catégorie introuvable",
     "empty": "Aucun article publié dans cette catégorie pour le moment.",
     "articleCount": "{count, plural, =0 {Aucun article} one {# article} other {# articles}}",
@@ -31,6 +33,7 @@
   "Region": {
     "breadcrumbLabel": "Fil d'Ariane",
     "home": "Accueil",
+    "metaDescription": "Les dernières actualités et analyses de la région {name}.",
     "notFound": "Région introuvable",
     "empty": "Aucun article publié dans cette région pour le moment.",
     "articleCount": "{count, plural, =0 {Aucun article} one {# article} other {# articles}}",

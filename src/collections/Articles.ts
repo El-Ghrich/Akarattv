@@ -62,7 +62,15 @@ export const Articles: CollectionConfig = {
     },
   },
   versions: {
-    drafts: true,
+    drafts: {
+      // Adds "Schedule publish / unpublish" to the admin sidebar. The schedule
+      // is stored as a `schedulePublish` job in the database and applied by the
+      // job runner (see `jobs` in payload.config.ts).
+      schedulePublish: {
+        // 24-hour clock reads better in both Arabic and French admin UIs.
+        timeFormat: 'HH:mm',
+      },
+    },
   },
   access: {
     // Logged-in admin/editor can read everything (including drafts).
@@ -114,7 +122,14 @@ export const Articles: CollectionConfig = {
         return data
       },
     ],
-    afterChange: [() => revalidateContent(revalidationTags.article)],
+    afterChange: [
+      // A draft save changes nothing visitors can see. Revalidate only when the
+      // article is published now or was published before (unpublish/archive).
+      ({ doc, previousDoc }) => {
+        if (doc?._status !== 'published' && previousDoc?._status !== 'published') return
+        return revalidateContent(revalidationTags.article)
+      },
+    ],
     afterDelete: [() => revalidateContent(revalidationTags.article)],
   },
   fields: [

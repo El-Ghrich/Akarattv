@@ -41,6 +41,13 @@
     "previous": "Précédent",
     "next": "Suivant"
   },
+  "Videos": {
+    "previous": "Vidéo précédente",
+    "next": "Vidéo suivante",
+    "play": "Lire la vidéo",
+    "views": "vues",
+    "duration": "min"
+  },
   "NotFound": {
     "title": "Page introuvable",
     "text": "Cet article n'existe pas ou a été supprimé.",

@@ -21,18 +21,26 @@ export const OG_CONTENT_TYPE = 'image/png'
 
 export const OG_ALT = 'Akarat TV'
 
-const FONT_PATH = path.join(process.cwd(), 'src/fonts/Cairo-VariableFont_slnt,wght.ttf')
+/**
+ * Satori cannot parse variable fonts: it crashes in `parseFvarAxis` before any
+ * markup is laid out. The cards therefore use static Cairo instances generated
+ * from the variable file the site itself self-hosts (same typeface, one file
+ * per weight). They are read once per server process.
+ */
+const FONT_FILES = [
+  { file: 'Cairo-Regular.ttf', weight: 400 },
+  { file: 'Cairo-Bold.ttf', weight: 700 },
+  { file: 'Cairo-Black.ttf', weight: 900 },
+] as const
 
-// The font is read once per server process. Satori matches the requested
-// `fontWeight` to a registered face, so the variable file is registered under
-// the three weights the cards use.
-const cairo = await readFile(FONT_PATH)
-const fonts = ([400, 700, 900] as const).map((weight) => ({
-  data: cairo,
-  name: 'Cairo',
-  style: 'normal' as const,
-  weight,
-}))
+const fonts = await Promise.all(
+  FONT_FILES.map(async ({ file, weight }) => ({
+    data: await readFile(path.join(process.cwd(), 'src/fonts', file)),
+    name: 'Cairo',
+    style: 'normal' as const,
+    weight,
+  })),
+)
 
 const CARD_BACKGROUND = '#0b3b2e'
 const ACCENT = '#c9a227'

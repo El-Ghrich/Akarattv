@@ -53,6 +53,17 @@ const nextConfig: NextConfig = {
         hostname: 'images.unsplash.com',
         pathname: '/**',
       },
+      // YouTube thumbnails for the homepage video section.
+      {
+        protocol: 'https' as const,
+        hostname: 'i.ytimg.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https' as const,
+        hostname: 'img.youtube.com',
+        pathname: '/**',
+      },
     ],
     localPatterns: [
       {

@@ -1,6 +1,7 @@
 import * as migration_20261111_153402_initial from './20261111_153402_initial';
 import * as migration_20261113_183625_schedule_publish_jobs from './20261113_183625_schedule_publish_jobs';
 import * as migration_20261114_142001_redirects from './20261114_142001_redirects';
+import * as migration_20261114_150311_videos from './20261114_150311_videos';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20261114_142001_redirects.up,
     down: migration_20261114_142001_redirects.down,
-    name: '20261114_142001_redirects'
+    name: '20261114_142001_redirects',
+  },
+  {
+    up: migration_20261114_150311_videos.up,
+    down: migration_20261114_150311_videos.down,
+    name: '20261114_150311_videos'
   },
 ];

@@ -37,6 +37,7 @@ import { Authors } from './collections/Authors'
 import { Categories } from './collections/Categories'
 import { Regions } from './collections/Regions'
 import { Articles } from './collections/Articles'
+import { Videos } from './collections/Videos'
 import { ImageBlock } from './blocks/ImageBlock'
 import { PullQuoteBlock } from './blocks/PullQuoteBlock'
 import { RelatedArticleBlock } from './blocks/RelatedArticleBlock'
@@ -89,7 +90,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Authors, Categories, Regions, Articles],
+  collections: [Users, Media, Authors, Categories, Regions, Articles, Videos],
   editor: lexicalEditor({
     admin: {
       // No hover "+" add-block handle and no bottom "+" paragraph button:

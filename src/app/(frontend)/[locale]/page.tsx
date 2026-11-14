@@ -6,7 +6,7 @@ import React from 'react'
 
 import { HomeSections } from '@/components/Home'
 import { routing, type Locale } from '@/i18n/routing'
-import { getHomeContent } from '@/utilities/content'
+import { getHomeContent, getHomeVideos } from '@/utilities/content'
 import { homeLanguages, openGraphLocale, siteName } from '@/utilities/seo'
 
 type HomePageProps = {
@@ -54,11 +54,11 @@ export default async function HomePage({ params }: HomePageProps) {
   if (!hasLocale(routing.locales, locale)) notFound()
 
   const typedLocale: Locale = locale
-  const content = await getHomeContent(typedLocale)
+  const [content, videos] = await Promise.all([getHomeContent(typedLocale), getHomeVideos()])
 
   return (
     <main className="mx-auto flex w-full max-w-content flex-1 flex-col gap-14 px-4 py-8 sm:px-6">
-      <HomeSections content={content} locale={typedLocale} />
+      <HomeSections content={content} locale={typedLocale} videos={videos} />
     </main>
   )
 }

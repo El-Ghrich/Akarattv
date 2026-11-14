@@ -73,6 +73,7 @@ export interface Config {
     categories: Category;
     regions: Region;
     articles: Article;
+    videos: Video;
     redirects: Redirect;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -88,6 +89,7 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     regions: RegionsSelect<false> | RegionsSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    videos: VideosSelect<false> | VideosSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -309,6 +311,59 @@ export interface Article {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Paste a YouTube URL and save. Title, thumbnail, duration and views are filled automatically.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: number;
+  /**
+   * Watch, share, Shorts or youtu.be links are all accepted.
+   */
+  youtubeUrl: string;
+  /**
+   * Filled from YouTube. Edit to override.
+   */
+  title?: string | null;
+  /**
+   * Extracted from the URL.
+   */
+  videoId?: string | null;
+  /**
+   * Filled from YouTube (used by structured data).
+   */
+  description?: string | null;
+  /**
+   * Filled from YouTube.
+   */
+  authorName?: string | null;
+  /**
+   * Filled from YouTube. The frontend loads it from i.ytimg.com.
+   */
+  thumbnailUrl?: string | null;
+  /**
+   * Filled from YouTube when the Data API key is configured.
+   */
+  durationSeconds?: number | null;
+  /**
+   * Snapshot from the last refresh.
+   */
+  viewCount?: number | null;
+  publishedAt?: string | null;
+  showOnHomepage?: boolean | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  /**
+   * Re-fetch the title, thumbnail, duration, views and date from YouTube on save.
+   */
+  refreshMetadata?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Enter the full old path, including the language prefix, for example /ar/articles/old-slug.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -477,6 +532,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'articles';
         value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'videos';
+        value: number | Video;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -677,6 +736,26 @@ export interface ArticlesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos_select".
+ */
+export interface VideosSelect<T extends boolean = true> {
+  youtubeUrl?: T;
+  title?: T;
+  videoId?: T;
+  description?: T;
+  authorName?: T;
+  thumbnailUrl?: T;
+  durationSeconds?: T;
+  viewCount?: T;
+  publishedAt?: T;
+  showOnHomepage?: T;
+  order?: T;
+  refreshMetadata?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

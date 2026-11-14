@@ -9,6 +9,7 @@ export const CONTENT_TAGS = {
   categories: 'categories',
   regions: 'regions',
   redirects: 'redirects',
+  videos: 'videos',
 } as const
 
 /** Tag sets invalidated by collection hooks. */
@@ -24,4 +25,6 @@ export const revalidationTags = {
   // The proxy keeps its own short-lived copy of the redirect table, so this
   // tag primarily refreshes anything that reads redirects through Next's cache.
   redirect: [CONTENT_TAGS.redirects],
+  // The homepage video section has its own cache entry, independent of articles.
+  video: [CONTENT_TAGS.videos],
 } as const

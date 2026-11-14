@@ -92,6 +92,10 @@ export type HomeContent = {
     title: string
   }
   sections: HomeSection[]
+  videos: {
+    subtitle: string
+    title: string
+  }
 }
 
 const images = {
@@ -283,6 +287,10 @@ const ar: HomeContent = {
     ],
     title: 'آخر الأخبار',
     viewAll: { href: '#latest-news', label: 'عرض الكل' },
+  },
+  videos: {
+    subtitle: 'تغطياتنا وبرامجنا الحصرية الخاصة بقطاع العقار والاستثمار بالمغرب',
+    title: 'فيديوهات عقارات تيفي',
   },
   newsletter: {
     button: 'اشترك الآن مجاناً',
@@ -592,6 +600,11 @@ const fr: HomeContent = {
     ],
     title: 'Dernières actualités',
     viewAll: { href: '#latest-news', label: 'Voir tout' },
+  },
+  videos: {
+    subtitle:
+      "Nos reportages et programmes exclusifs sur l'immobilier et l'investissement au Maroc",
+    title: 'Vidéos Akarat TV',
   },
   newsletter: {
     button: "S'abonner gratuitement",

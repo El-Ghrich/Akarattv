@@ -10,6 +10,9 @@ import {
   unsplashUrl,
 } from '@/content/home'
 import type { Locale } from '@/i18n/routing'
+import type { HomeVideo } from '@/utilities/content'
+
+import { VideosSection } from './VideosSection'
 
 const cardHref = (locale: Locale, href: string) => `/${locale}${href}`
 
@@ -356,9 +359,19 @@ const RegionChips = ({ content, locale }: { content: HomeContent; locale: Locale
 const NewsletterBand = ({ content }: { content: HomeContent }) => (
   <section
     aria-labelledby="newsletter-title"
-    className="pattern-architectural relative overflow-hidden rounded-card border border-gold-500/20 bg-green-900 p-8 text-white shadow-md sm:p-12"
+    className="relative overflow-hidden rounded-card border border-gold-500/20 bg-green-900 p-8 text-white shadow-md sm:p-12"
     id="newsletter-section"
   >
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 bg-cover bg-center"
+      style={{ backgroundImage: "url('/bg.svg')" }}
+    />
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 bg-gradient-to-br from-green-950/55 via-green-900/45 to-green-900/35"
+    />
+
     <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center">
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-gold-500/40 bg-green-800 text-gold-400">
         <MailCheckIcon className="h-6 w-6" />
@@ -403,14 +416,18 @@ const NewsletterBand = ({ content }: { content: HomeContent }) => (
 export type HomeSectionsProps = {
   content: HomeContent
   locale: Locale
+  videos: HomeVideo[]
 }
 
-export const HomeSections = ({ content, locale }: HomeSectionsProps) => (
+export const HomeSections = ({ content, locale, videos }: HomeSectionsProps) => (
   <>
     <BrandHero content={content} locale={locale} />
     <HeroZone content={content} locale={locale} />
     <LatestNews content={content} locale={locale} />
-    {content.sections.map((section) => (
+    <VideosSection content={content.videos} locale={locale} videos={videos} />
+    {/* Only the first two category blocks belong on the homepage; the header
+        still lists every category. */}
+    {content.sections.slice(0, 2).map((section) => (
       <CategorySection key={section.id} locale={locale} section={section} />
     ))}
     <RegionChips content={content} locale={locale} />

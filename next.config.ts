@@ -21,6 +21,8 @@ try {
 }
 
 const nextConfig: NextConfig = {
+  // Do not advertise the framework in a response header.
+  poweredByHeader: false,
   images: {
     /**
      * Only the widths that exist as real objects in the bucket. Next's defaults
@@ -93,6 +95,23 @@ const nextConfig: NextConfig = {
    */
   outputFileTracingIncludes: {
     '/**/opengraph-image': ['./src/fonts/*.ttf'],
+  },
+  /**
+   * The decorative backdrops in `public` are stable assets, so a CDN can keep
+   * them for weeks instead of revalidating them on every visit.
+   */
+  async headers() {
+    const cacheControl = {
+      key: 'Cache-Control',
+      value: 'public, max-age=2592000, stale-while-revalidate=86400',
+    }
+
+    return [
+      '/bg-960.webp',
+      '/bg-1920.webp',
+      '/bg-youtube-960.webp',
+      '/bg-youtube-1920.webp',
+    ].map((source) => ({ headers: [cacheControl], source }))
   },
 }
 

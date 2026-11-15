@@ -24,10 +24,15 @@ import '../styles.css'
  * Cairo covers Arabic; Titillium Web covers the Latin/French UI. Both are
  * self-hosted from `src/fonts`, so neither the build nor the browser calls
  * Google Fonts.
+ *
+ * The files are WOFF2 builds of the upstream faces, pinned to the axes and
+ * character ranges the site actually writes (Arabic + Latin). That takes the
+ * Arabic font from 353 KB to 69 KB and the three Latin weights from 167 KB to
+ * 51 KB, all still served from `_next/static` with immutable caching.
  */
 const cairo = localFont({
   display: 'swap',
-  src: '../../../fonts/Cairo-VariableFont_slnt,wght.ttf',
+  src: '../../../fonts/Cairo-Variable-wght.woff2',
   variable: '--font-cairo',
   weight: '200 1000',
 })
@@ -35,9 +40,9 @@ const cairo = localFont({
 const titillium = localFont({
   display: 'swap',
   src: [
-    { path: '../../../fonts/TitilliumWeb-Regular.ttf', style: 'normal', weight: '400' },
-    { path: '../../../fonts/TitilliumWeb-SemiBold.ttf', style: 'normal', weight: '600' },
-    { path: '../../../fonts/TitilliumWeb-Bold.ttf', style: 'normal', weight: '700' },
+    { path: '../../../fonts/TitilliumWeb-Regular.woff2', style: 'normal', weight: '400' },
+    { path: '../../../fonts/TitilliumWeb-SemiBold.woff2', style: 'normal', weight: '600' },
+    { path: '../../../fonts/TitilliumWeb-Bold.woff2', style: 'normal', weight: '700' },
   ],
   variable: '--font-titillium',
 })

@@ -364,8 +364,7 @@ const NewsletterBand = ({ content }: { content: HomeContent }) => (
   >
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 bg-cover bg-center"
-      style={{ backgroundImage: "url('/bg.svg')" }}
+      className="newsletter-backdrop pointer-events-none absolute inset-0"
     />
     <div
       aria-hidden="true"

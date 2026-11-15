@@ -10,7 +10,7 @@ import { toISODuration, youtubeEmbedUrl, youtubeWatchUrl } from '@/utilities/you
 import { VideoCarousel } from './VideoCarousel'
 
 type VideosSectionProps = {
-  content: HomeContent['videos']
+  content: HomeContent['videos'] | undefined
   locale: Locale
   videos: HomeVideo[]
 }
@@ -41,7 +41,9 @@ const formatDuration = (seconds: number | null, unit: string): string | undefine
  * before until the first video is published from the admin.
  */
 export const VideosSection = async ({ content, locale, videos }: VideosSectionProps) => {
-  if (videos.length === 0) return null
+  // `content.videos` is static copy, but a homepage payload cached by an older
+  // build can predate the field; render nothing instead of throwing.
+  if (!content || videos.length === 0) return null
 
   const t = await getTranslations({ locale, namespace: 'Videos' })
 
@@ -84,8 +86,7 @@ export const VideosSection = async ({ content, locale, videos }: VideosSectionPr
         {/* Vector backdrop for the channel band. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/BG%20Youtube.svg')" }}
+          className="youtube-backdrop pointer-events-none absolute inset-0"
         />
         <div
           aria-hidden="true"

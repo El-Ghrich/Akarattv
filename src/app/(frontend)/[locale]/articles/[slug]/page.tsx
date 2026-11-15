@@ -7,6 +7,7 @@ import { getPayload } from 'payload'
 import React from 'react'
 
 import config from '@/payload.config'
+import { ArticleView } from '@/components/ArticleView'
 import { JsonLd } from '@/components/JsonLd'
 import { LiveArticle } from '@/components/LiveArticle'
 import { getPathname } from '@/i18n/navigation'
@@ -134,14 +135,28 @@ export default async function ArticlePage({ params, searchParams }: PageProps) {
           breadcrumbJsonLd(breadcrumbs),
         ]}
       />
-      <LiveArticle
-        initialArticle={article}
-        latest={latest}
-        locale={locale}
-        preview={preview}
-        serverURL={serverURL}
-        shareUrl={shareUrl}
-      />
+      {/*
+        Live preview is the only reason this tree needs to run on the client.
+        Readers get the server-rendered article instead, so the preview bundle
+        is never downloaded on a normal visit.
+      */}
+      {preview ? (
+        <LiveArticle
+          initialArticle={article}
+          latest={latest}
+          locale={locale}
+          preview={preview}
+          serverURL={serverURL}
+          shareUrl={shareUrl}
+        />
+      ) : (
+        <ArticleView
+          article={article}
+          latest={latest}
+          locale={locale}
+          shareUrl={shareUrl}
+        />
+      )}
     </main>
   )
 }

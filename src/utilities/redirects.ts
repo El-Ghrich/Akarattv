@@ -200,8 +200,24 @@ const fetchLookup = async (origin: string): Promise<Map<string, RedirectRule>> =
   return lookup
 }
 
-const getLookup = async (origin: string): Promise<Map<string, RedirectRule>> => {
-  if (cache && cache.expiresAt > Date.now()) return cache.lookup
+const getLookup = async (
+  origin: string,
+  waitUntil?: (promise: Promise<unknown>) => void,
+): Promise<Map<string, RedirectRule>> => {
+  // No table at all (a cold instance): this one request has to wait for it.
+  if (!cache) return refreshLookup(origin)
+
+  // Stale-while-revalidate. A visitor should never pay for the refresh: the
+  // previous table is a minute old at most, and the new one is ready for the
+  // next request. `waitUntil` keeps the refresh alive after the response.
+  if (cache.expiresAt <= Date.now()) {
+    waitUntil?.(refreshLookup(origin))
+  }
+
+  return cache.lookup
+}
+
+const refreshLookup = (origin: string): Promise<Map<string, RedirectRule>> => {
   if (pending) return pending
 
   pending = fetchLookup(origin)
@@ -271,9 +287,10 @@ const destinationFor = (rule: RedirectRule, locale: Locale | null): string | nul
 export const findRedirect = async (
   pathname: string,
   origin: string,
+  waitUntil?: (promise: Promise<unknown>) => void,
 ): Promise<RedirectMatch | null> => {
   const normalized = normalizePath(pathname)
-  const lookup = await getLookup(origin)
+  const lookup = await getLookup(origin, waitUntil)
 
   if (lookup.size === 0) return null
 

@@ -8,11 +8,10 @@ import type { Locale } from '@/i18n/routing'
 /**
  * Shared 1200×630 social card used by the `opengraph-image` routes.
  *
- * The same Cairo file the site already self-hosts is handed to Satori. It is an
- * Arabic variable font, so Satori shapes and joins Arabic glyphs (and applies
- * bidi ordering for mixed Arabic/Latin titles) instead of emitting disconnected
- * letters. Satori lays out in LTR only, so the card mirrors itself manually:
- * right alignment for Arabic, left alignment for French.
+ * The site's Arabic face (Cairo) is handed to Satori so Arabic glyphs are
+ * shaped and joined (and bidi ordering applies to mixed Arabic/Latin titles)
+ * instead of emitting disconnected letters. Satori lays out in LTR only, so the
+ * card mirrors itself manually: right alignment for Arabic, left for French.
  */
 
 export const OG_SIZE = { width: 1200, height: 630 } as const
@@ -25,7 +24,8 @@ export const OG_ALT = 'Akarat TV'
  * Satori cannot parse variable fonts: it crashes in `parseFvarAxis` before any
  * markup is laid out. The cards therefore use static Cairo instances generated
  * from the variable file the site itself self-hosts (same typeface, one file
- * per weight). They are read once per server process.
+ * per weight), subset to the Arabic + Latin ranges the site writes. They are
+ * read once per server process.
  */
 const FONT_FILES = [
   { file: 'Cairo-Regular.ttf', weight: 400 },

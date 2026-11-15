@@ -149,6 +149,51 @@
   }
 }
 
+/*
+ * Arabic leading.
+ *
+ * Cairo has tall ascenders and deep descenders, and Arabic has no capitals to
+ * break up a line, so leading tuned for Latin looks cramped. The type-scale
+ * tokens are raised (every `text-*` utility reads them) and the bare element
+ * defaults follow, since Arabic copy also flows through plain `<p>`/`<h*>`.
+ * These rules are deliberately unlayered so they win over Tailwind's utilities.
+ */
+html[lang='ar'] {
+  --text-display--line-height: 1.55;
+  --text-h1--line-height: 1.6;
+  --text-h2--line-height: 1.65;
+  --text-h3--line-height: 1.7;
+  --text-card-title--line-height: 1.8;
+  --text-body-article--line-height: 2.1;
+  --text-body-ui--line-height: 1.95;
+  --text-meta--line-height: 1.7;
+  --text-label--line-height: 1.4;
+
+  line-height: 1.8;
+}
+
+html[lang='ar'] body {
+  line-height: 1.85;
+}
+
+html[lang='ar'] :is(h1, h2, h3, h4, h5, h6) {
+  line-height: 1.6;
+}
+
+html[lang='ar'] :is(p, figcaption, blockquote, dd) {
+  line-height: 2;
+}
+
+/* Long-form reading gets the loosest rhythm, and list items inside it have to
+   match the paragraphs they sit between. */
+html[lang='ar'] .article-content :is(p, li, blockquote) {
+  line-height: 2.15;
+}
+
+html[lang='ar'] .article-content li {
+  margin-block: 0.35em;
+}
+
 @media (max-width: 1024px) {
   h1 {
     margin: 24px 0;
@@ -200,6 +245,38 @@
     16px 16px;
   background-size: 32px 32px;
 }
+
+/*
+ * Decorative vector backdrops, pre-rasterized to WebP. The source SVGs are
+ * 850 KB and 200 KB of paths that every visitor would otherwise parse and
+ * paint; the WebP exports are ~29 KB and ~23 KB. A smaller export is served to
+ * phones so they do not decode a desktop-sized bitmap.
+ */
+.newsletter-backdrop,
+.youtube-backdrop {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.newsletter-backdrop {
+  background-image: url('/bg-960.webp');
+}
+
+.youtube-backdrop {
+  background-image: url('/bg-youtube-960.webp');
+}
+
+@media (min-width: 768px) {
+  .newsletter-backdrop {
+    background-image: url('/bg-1920.webp');
+  }
+
+  .youtube-backdrop {
+    background-image: url('/bg-youtube-1920.webp');
+  }
+}
+
 
 .article-page {
   --article-accent: #d9ab4a;

@@ -256,35 +256,13 @@ const HeroZone = ({ content, locale }: { content: HomeContent; locale: Locale })
 
         <div className="flex flex-1 flex-col justify-between gap-4">
           {sidebar.items.map((card) => (
-            <CompactCard card={card} key={card.title} locale={locale} />
+            <CompactCard card={card} key={card.href} locale={locale} />
           ))}
         </div>
       </aside>
     </section>
   )
 }
-
-const LatestNews = ({ content, locale }: { content: HomeContent; locale: Locale }) => (
-  <section aria-labelledby="latest-news-title" id="latest-news">
-    <SectionHeader
-      id="latest-news-title"
-      locale={locale}
-      title={content.latest.title}
-      viewAll={content.latest.viewAll}
-    />
-
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-      {content.latest.items.map((card) => (
-        <StandardCard
-          card={card}
-          key={card.title}
-          locale={locale}
-          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
-        />
-      ))}
-    </div>
-  </section>
-)
 
 const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSection }) => {
   const hasCompact = section.compact.length > 0
@@ -315,7 +293,7 @@ const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSec
         {hasCompact ? (
           <div className="flex flex-col justify-between gap-4 lg:col-span-4">
             {section.compact.map((card) => (
-              <CompactCard card={card} key={card.title} locale={locale} small />
+              <CompactCard card={card} key={card.href} locale={locale} small />
             ))}
           </div>
         ) : null}
@@ -323,38 +301,6 @@ const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSec
     </section>
   )
 }
-
-const RegionChips = ({ content, locale }: { content: HomeContent; locale: Locale }) => (
-  <section
-    aria-labelledby="regions-browse-title"
-    className="rounded-card border border-line bg-surface p-8 shadow-xs"
-    id="regions"
-  >
-    <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
-      <div>
-        <h2
-          className="m-0 mb-1 font-headline text-h2 font-bold text-green-900"
-          id="regions-browse-title"
-        >
-          {content.regions.title}
-        </h2>
-        <p className="m-0 text-body-ui text-ink-500">{content.regions.description}</p>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-3">
-        {content.regions.items.map((region) => (
-          <a
-            className="inline-flex items-center rounded-full border border-line bg-surface px-6 py-2.5 font-headline text-body-ui font-bold text-ink-900 shadow-xs transition-colors hover:border-gold-500 hover:bg-green-100 hover:text-green-900"
-            href={cardHref(locale, region.href)}
-            key={region.href + region.label}
-          >
-            <span>{region.label}</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-)
 
 const NewsletterBand = ({ content }: { content: HomeContent }) => (
   <section
@@ -422,16 +368,14 @@ export const HomeSections = ({ content, locale, videos }: HomeSectionsProps) => 
   <>
     <BrandHero content={content} locale={locale} />
     <HeroZone content={content} locale={locale} />
-    <LatestNews content={content} locale={locale} />
     <VideosSection content={content.videos} locale={locale} videos={videos} />
     {/* Only the first two category blocks belong on the homepage; the header
         still lists every category. */}
     {content.sections.slice(0, 2).map((section) => (
       <CategorySection key={section.id} locale={locale} section={section} />
     ))}
-    <RegionChips content={content} locale={locale} />
     <NewsletterBand content={content} />
   </>
 )
 
-export { BrandHero, HeroZone, LatestNews, NewsletterBand, RegionChips, StandardCard }
+export { BrandHero, HeroZone, NewsletterBand, StandardCard }

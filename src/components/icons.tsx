@@ -90,6 +90,12 @@ export const MenuIcon = ({ className }: IconProps) => (
   </Svg>
 )
 
+export const ChevronDownIcon = ({ className }: IconProps) => (
+  <Svg className={className}>
+    <path d="m6 9 6 6 6-6" />
+  </Svg>
+)
+
 export const HomeIcon = ({ className }: IconProps) => (
   <Svg className={className}>
     <path d="m3 10 9-7 9 7" />

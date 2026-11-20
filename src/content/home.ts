@@ -1,6 +1,8 @@
 import type { Locale } from '@/i18n/routing'
 
 export type HomeLink = {
+  /** Present on grouped nav entries; each child is still a real archive route. */
+  children?: HomeLink[]
   href: string
   label: string
 }

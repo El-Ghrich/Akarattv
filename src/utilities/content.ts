@@ -127,6 +127,48 @@ const categoryLinks = (categories: Category[]): HomeLink[] =>
     label: category.title,
   }))
 
+/**
+ * The three housing archives sit behind a single header entry. Slugs are
+ * localized, so both spellings are listed; only the ones that exist in the
+ * current locale are pulled into the group.
+ */
+const HOUSING_SLUGS = new Set([
+  'سكن-اقتصادي',
+  'سكن-متوسط',
+  'سكن-عالي',
+  'logement-economique',
+  'logement-intermediaire',
+  'logement-haut-standing',
+])
+
+const HOUSING_LABEL: Record<Locale, string> = {
+  ar: 'السكن',
+  fr: 'Logement',
+}
+
+const isHousingLink = (link: HomeLink): boolean => {
+  const slug = decodeURIComponent(link.href).split('/').pop() ?? ''
+  return HOUSING_SLUGS.has(slug)
+}
+
+const groupedCategoryLinks = (categories: Category[], locale: Locale): HomeLink[] => {
+  const links = categoryLinks(categories)
+  const housing = links.filter(isHousingLink)
+  if (housing.length === 0) return links
+
+  const group: HomeLink = {
+    children: housing,
+    // Used only as a no-JS fallback; the header opens the dropdown on click.
+    href: housing[0].href,
+    label: HOUSING_LABEL[locale],
+  }
+  const firstIndex = links.findIndex(isHousingLink)
+  const result = links.filter((link) => !isHousingLink(link))
+  result.splice(firstIndex, 0, group)
+
+  return result
+}
+
 const fetchRegions = async (locale: Locale): Promise<Region[]> => {
   const payload = await getPayload({ config })
 
@@ -354,7 +396,7 @@ export const getCategoryNav = unstable_cache(
     // The header always starts with the homepage, then the live categories.
     // Returning the static editorial anchors here would reintroduce the
     // scroll-vs-route behaviour.
-    return [home, ...categoryLinks(categories)]
+    return [home, ...groupedCategoryLinks(categories, locale)]
   },
   ['category-nav'],
   {

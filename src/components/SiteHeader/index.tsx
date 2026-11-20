@@ -82,8 +82,8 @@ export async function SiteHeader({
       </aside>
 
       <header className="sticky top-0 z-40 bg-green-900 shadow-md">
-        <div className="mx-auto flex h-20 max-w-content items-center justify-between gap-4 px-4 sm:px-6">
-          <div className="flex min-w-0 items-center gap-8">
+        <div className="mx-auto flex h-20 max-w-content items-center gap-3 px-4 sm:gap-4 sm:px-6">
+          <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-6">
             <Link
               aria-label={content.homeLabel}
               className="group inline-flex shrink-0 items-center py-1"
@@ -114,7 +114,7 @@ export async function SiteHeader({
             </button>
 
             <a
-              className="hidden h-11 items-center justify-center rounded-card bg-gold-500 px-5 font-headline text-body-ui font-bold text-green-950 shadow-sm transition-colors hover:bg-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 sm:inline-flex"
+              className="hidden h-10 items-center justify-center rounded-card bg-gold-500 px-4 font-headline text-[13px] font-bold text-green-950 shadow-sm transition-colors hover:bg-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 sm:inline-flex"
               href={newsletterTarget}
             >
               {content.newsletter}

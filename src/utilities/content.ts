@@ -159,7 +159,7 @@ const groupedCategoryLinks = (categories: Category[], locale: Locale): HomeLink[
   const group: HomeLink = {
     children: housing,
     // Used only as a no-JS fallback; the header opens the dropdown on click.
-    href: housing[0].href,
+    href: housing[0]!.href,
     label: HOUSING_LABEL[locale],
   }
   const firstIndex = links.findIndex(isHousingLink)

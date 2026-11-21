@@ -54,21 +54,16 @@ const SectionHeader = ({ id, locale, title, viewAll }: SectionHeaderProps) => (
 type CompactCardProps = {
   card: HomeCard
   locale: Locale
-  small?: boolean
 }
 
-const CompactCard = ({ card, locale, small = false }: CompactCardProps) => (
+const CompactCard = ({ card, locale }: CompactCardProps) => (
   <article className="group relative flex gap-3.5 rounded-card border border-line bg-surface p-3.5 shadow-xs transition-all hover:border-gold-400">
-    <div
-      className={`relative shrink-0 overflow-hidden rounded-card bg-green-100 ${
-        small ? 'h-20 w-20' : 'h-24 w-24'
-      }`}
-    >
+    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-card bg-green-100">
       <Image
         alt={card.alt}
         className="object-cover transition-transform duration-300 group-hover:scale-105"
         fill
-        sizes={small ? '80px' : '96px'}
+        sizes="96px"
         src={cardImageUrl(card, 400)}
       />
     </div>
@@ -89,14 +84,39 @@ const CompactCard = ({ card, locale, small = false }: CompactCardProps) => (
   </article>
 )
 
+type SupportingArticleProps = {
+  card: HomeCard
+  locale: Locale
+}
+
+/**
+ * A text-only companion to the section lead. It keeps its natural height so a
+ * short list never stretches to match the featured card.
+ */
+const SupportingArticle = ({ card, locale }: SupportingArticleProps) => (
+  <article className="group relative py-4">
+    <a className="after:absolute after:inset-0" href={cardHref(locale, card.href)}>
+      <h3 className="m-0 line-clamp-2 font-headline text-body-ui font-bold text-ink-900 transition-colors group-hover:text-green-600">
+        {card.title}
+      </h3>
+    </a>
+    <div className="mt-2 flex items-center gap-2 text-meta text-ink-500">
+      <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500" />
+      <span>{card.meta}</span>
+    </div>
+  </article>
+)
+
 type StandardCardProps = {
   card: HomeCard
+  /** Overrides the category badge, e.g. "خبر رئيسي" for a section lead. */
+  label?: string
   locale: Locale
   large?: boolean
   sizes: string
 }
 
-const StandardCard = ({ card, large = false, locale, sizes }: StandardCardProps) => (
+const StandardCard = ({ card, label, large = false, locale, sizes }: StandardCardProps) => (
   <article className="group relative flex flex-col overflow-hidden rounded-card border border-line bg-surface shadow-xs transition-all duration-200 hover:border-gold-400">
     <div
       className={`relative overflow-hidden bg-green-100 ${
@@ -119,7 +139,7 @@ const StandardCard = ({ card, large = false, locale, sizes }: StandardCardProps)
     >
       <div>
         <div className="mb-2">
-          <Badge>{card.category}</Badge>
+          <Badge>{label ?? card.category}</Badge>
         </div>
         <h3
           className={`m-0 mb-2 line-clamp-3 font-headline font-bold leading-snug text-ink-900 transition-colors group-hover:text-green-600 ${
@@ -266,6 +286,7 @@ const HeroZone = ({ content, locale }: { content: HomeContent; locale: Locale })
 
 const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSection }) => {
   const hasCompact = section.compact.length > 0
+  const featuredLabel = locale === 'ar' ? 'خبر رئيسي' : 'À la une'
 
   return (
     <section aria-labelledby={`${section.id}-title`} className="pt-2" id={section.id}>
@@ -277,13 +298,14 @@ const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSec
       />
 
       <div
-        className={`grid grid-cols-1 items-stretch gap-6 ${
+        className={`grid grid-cols-1 items-start gap-6 ${
           hasCompact ? 'lg:grid-cols-12' : ''
         }`}
       >
         <div className={hasCompact ? 'lg:col-span-8' : undefined}>
           <StandardCard
             card={section.featured}
+            label={featuredLabel}
             large
             locale={locale}
             sizes={hasCompact ? '(min-width: 1024px) 66vw, 100vw' : '100vw'}
@@ -291,10 +313,12 @@ const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSec
         </div>
 
         {hasCompact ? (
-          <div className="flex flex-col justify-between gap-4 lg:col-span-4">
-            {section.compact.map((card) => (
-              <CompactCard card={card} key={card.href} locale={locale} small />
-            ))}
+          <div className="border-y border-line lg:col-span-4">
+            <div className="flex flex-col divide-y divide-line">
+              {section.compact.map((card) => (
+                <SupportingArticle card={card} key={card.href} locale={locale} />
+              ))}
+            </div>
           </div>
         ) : null}
       </div>

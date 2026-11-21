@@ -236,11 +236,21 @@ html[lang='ar'] .article-content li {
 }
 
 /*
- * Header categories. The three housing archives now share one entry, which
- * leaves enough room for the row beside the logo and the newsletter button.
- * The old horizontal scroller is gone: any `overflow` ancestor would clip the
- * dropdown panel below the trigger.
+ * Header categories. The three housing archives share one entry, but French
+ * labels still overflow beside the logo and the newsletter button, so the row
+ * is a horizontally scrollable carousel with arrow controls. The scrollbar is
+ * hidden; the arrows and swipe/wheel both move the track.
  */
+.site-nav {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.site-nav::-webkit-scrollbar {
+  display: none;
+}
+
 .site-nav-group > summary {
   position: relative;
   list-style: none;
@@ -255,10 +265,9 @@ html[lang='ar'] .article-content li {
 }
 
 .site-nav-dropdown {
-  position: absolute;
+  position: fixed;
   z-index: 60;
-  inset-block-start: calc(100% + 12px);
-  inset-inline-start: 0;
+  inset: auto;
   min-width: 260px;
   padding: 8px;
   border: 1px solid rgb(235 213 156 / 0.3);

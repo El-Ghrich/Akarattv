@@ -101,7 +101,7 @@ export async function SiteHeader({
                 />
             </Link>
 
-            <SiteNav items={navItems} label={content.siteName} />
+            <SiteNav items={navItems} label={content.siteName} locale={locale} />
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
@@ -132,6 +132,7 @@ export async function SiteHeader({
                 <SiteNav
                   items={navItems}
                   label={content.siteName}
+                  locale={locale}
                   variant="mobile"
                 />
 

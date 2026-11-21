@@ -204,7 +204,7 @@ export function SiteNav({ items, label, locale, variant = 'desktop' }: SiteNavPr
         onClick={() => scrollNav(-1)}
         type="button"
       >
-        <ChevronDownIcon className="h-4 w-4 rotate-90" />
+        <ChevronDownIcon className={locale !== 'ar' ? "h-4 w-4 rotate-90" : "h-4 w-4 -rotate-90 "} />
       </button>
 
       <nav
@@ -289,7 +289,7 @@ export function SiteNav({ items, label, locale, variant = 'desktop' }: SiteNavPr
         onClick={() => scrollNav(1)}
         type="button"
       >
-        <ChevronDownIcon className="h-4 w-4 -rotate-90" />
+        <ChevronDownIcon className={locale !== 'ar' ? "h-4 w-4 -rotate-90" : "h-4 w-4 rotate-90 "} />
       </button>
     </div>
   )

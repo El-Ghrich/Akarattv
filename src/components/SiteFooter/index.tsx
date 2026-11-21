@@ -54,7 +54,7 @@ export async function SiteFooter({ alternates, locale }: SiteFooterProps) {
                   alt={content.header.siteName}
                   className="h-9 w-auto"
                   height={391}
-                  src="/logo.png"
+                  src="/akarattv-white.png"
                   width={742}
                 />
 

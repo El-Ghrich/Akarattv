@@ -1,0 +1,23 @@
+{
+  "name": "Akarat TV — أخبار العقار في المغرب",
+  "short_name": "Akarat TV",
+  "description": "أخبار العقار والاستثمار في المغرب — بالعربية والفرنسية",
+  "start_url": "/ar",
+  "display": "standalone",
+  "background_color": "#f7f5ef",
+  "theme_color": "#0f2e04",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

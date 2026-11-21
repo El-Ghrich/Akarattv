@@ -72,7 +72,7 @@ const nextConfig: NextConfig = {
         pathname: '/api/media/file/**',
       },
       {
-        pathname: '/logo.png',
+        pathname: '/akarattv-white.png',
       },
     ],
   },

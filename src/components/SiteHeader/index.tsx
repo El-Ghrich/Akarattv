@@ -25,7 +25,7 @@ const formatDate = (locale: Locale): string =>
     year: 'numeric',
   }).format(new Date())
 
-const logo = '/logo.png'
+const logo = '/akarattv-white.png'
 
 /**
  * Rendered by the locale layout. The layout resolves the page alternates from

@@ -16,7 +16,7 @@ import { getServerURL } from '@/utilities/serverURL'
 
 export type JsonLdObject = Record<string, unknown>
 
-const LOGO_PATH = '/logo.png'
+const LOGO_PATH = '/akarattv-white.png'
 
 const ORGANIZATION_NAME = 'Akarat TV'
 

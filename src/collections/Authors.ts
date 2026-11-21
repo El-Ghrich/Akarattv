@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
-import { isAdmin, isAdminOrEditor } from '@/access'
+
+import { isAdmin, isAdminFieldLevel, isAdminOrEditor } from '@/access'
 import { revalidationTags } from '@/utilities/cacheTags'
 import { l } from '@/utilities/labels'
 import { revalidateContent } from '@/utilities/revalidate'
@@ -12,7 +13,7 @@ export const Authors: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'slug', 'jobTitle', 'updatedAt'],
+    defaultColumns: ['name', 'slug', 'user', 'jobTitle', 'updatedAt'],
     group: l('Content', 'Contenu', 'المحتوى'),
   },
   access: {
@@ -48,6 +49,27 @@ export const Authors: CollectionConfig = {
           'Caractères latins, utilisés dans l’URL de l’auteur.',
           'أحرف لاتينية تُستخدم في رابط المؤلف.',
         ),
+      },
+    },
+    {
+      name: 'user',
+      type: 'relationship',
+      relationTo: 'users',
+      unique: true,
+      label: l('Linked user', 'Utilisateur lié', 'المستخدم المرتبط'),
+      admin: {
+        position: 'sidebar',
+        description: l(
+          'The admin user who owns this public author profile.',
+          'L’utilisateur administrateur propriétaire de ce profil public.',
+          'المستخدم الإداري الذي يملك ملف المؤلف العام هذا.',
+        ),
+      },
+      access: {
+        // Do not expose admin accounts through the public authors API.
+        read: isAdminFieldLevel,
+        create: isAdminFieldLevel,
+        update: isAdminFieldLevel,
       },
     },
     {

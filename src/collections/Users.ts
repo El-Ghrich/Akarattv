@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
+
 import { isAdmin, isAdminFieldLevel, isAdminOrEditor, isAdminOrSelf } from '@/access'
 import { l } from '@/utilities/labels'
+import { relationID, syncUserAuthor } from '@/utilities/userAuthor'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -9,8 +11,8 @@ export const Users: CollectionConfig = {
     plural: l('Users', 'Utilisateurs', 'المستخدمون'),
   },
   admin: {
-    useAsTitle: 'email',
-    defaultColumns: ['email', 'roles', 'createdAt'],
+    useAsTitle: 'name',
+    defaultColumns: ['name', 'email', 'roles', 'author', 'createdAt'],
     group: l('Settings', 'Paramètres', 'الإعدادات'),
   },
   auth: true,
@@ -27,6 +29,21 @@ export const Users: CollectionConfig = {
     delete: isAdmin,
   },
   hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data) return data
+
+        // The first-register endpoint posts to `/users`, not to the generic
+        // create handler. Keeping the name optional at the API boundary avoids
+        // a validation failure before the author profile can be created.
+        if (typeof data.name !== 'string' || !data.name.trim()) {
+          const email = typeof data.email === 'string' ? data.email : ''
+          data.name = email ? email.split('@')[0] : 'Akarattv'
+        }
+
+        return data
+      },
+    ],
     beforeChange: [
       async ({ req, operation, data }) => {
         // Automatically make the very first user created an admin
@@ -34,26 +51,78 @@ export const Users: CollectionConfig = {
           const existingUsers = await req.payload.find({
             collection: 'users',
             limit: 1,
+            req,
           })
 
           if (existingUsers.totalDocs === 0) {
             return {
               ...data,
-              roles: ['admin'],
+              roles: 'admin',
             }
           }
         }
         return data
       },
     ],
+    afterChange: [
+      async ({ req, doc, previousDoc, operation }) => {
+        // The hook that links the profile updates this same collection. Skip
+        // that follow-up save when nothing visible to the author changed.
+        const authorID = relationID(doc.author)
+        const nameChanged =
+          operation === 'create' || previousDoc?.name !== doc.name || authorID === undefined
+
+        if (!nameChanged) return
+
+        await syncUserAuthor({
+          req,
+          payload: req.payload,
+          userID: doc.id,
+          name: typeof doc.name === 'string' ? doc.name : '',
+          authorID,
+        })
+      },
+    ],
   },
   fields: [
     {
+      name: 'name',
+      type: 'text',
+      required: true,
+      label: l('Name', 'Nom', 'الاسم'),
+      admin: {
+        description: l(
+          'Used as the author name on articles written by this user.',
+          'Utilisé comme nom d’auteur sur les articles écrits par cet utilisateur.',
+          'يُستخدم كاسم المؤلف في المقالات التي يكتبها هذا المستخدم.',
+        ),
+      },
+    },
+    {
+      name: 'author',
+      type: 'relationship',
+      relationTo: 'authors',
+      unique: true,
+      label: l('Author profile', 'Profil auteur', 'ملف المؤلف'),
+      admin: {
+        position: 'sidebar',
+        description: l(
+          'Created automatically for every user. Editors can update the public profile from Content → Authors.',
+          'Créé automatiquement pour chaque utilisateur. Les éditeurs peuvent modifier le profil public dans Contenu → Auteurs.',
+          'يُنشأ تلقائياً لكل مستخدم. يمكن للمحررين تعديل الملف العام من المحتوى ← المؤلفون.',
+        ),
+      },
+      access: {
+        create: isAdminFieldLevel,
+        update: isAdminFieldLevel,
+      },
+    },
+    {
       name: 'roles',
       type: 'select',
-      hasMany: true,
-      defaultValue: ['editor'],
-      label: l('Roles', 'Rôles', 'الأدوار'),
+      required: true,
+      defaultValue: 'editor',
+      label: l('Role', 'Rôle', 'الدور'),
       options: [
         {
           label: l('Admin', 'Administrateur', 'مدير'),

@@ -143,7 +143,15 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  roles?: ('admin' | 'editor')[] | null;
+  /**
+   * Used as the author name on articles written by this user.
+   */
+  name: string;
+  /**
+   * Created automatically for every user. Editors can update the public profile from Content → Authors.
+   */
+  author?: (number | null) | Author;
+  roles: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -163,6 +171,34 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  name: string;
+  /**
+   * Latin characters, used in the author URL.
+   */
+  slug: string;
+  /**
+   * The admin user who owns this public author profile.
+   */
+  user?: (number | null) | User;
+  jobTitle?: string | null;
+  bio?: string | null;
+  photo?: (number | null) | Media;
+  socials?: {
+    website?: string | null;
+    x?: string | null;
+    linkedin?: string | null;
+    facebook?: string | null;
+    instagram?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -219,30 +255,6 @@ export interface Media {
       filename?: string | null;
     };
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors".
- */
-export interface Author {
-  id: number;
-  name: string;
-  /**
-   * Latin characters, used in the author URL.
-   */
-  slug: string;
-  jobTitle?: string | null;
-  bio?: string | null;
-  photo?: (number | null) | Media;
-  socials?: {
-    website?: string | null;
-    x?: string | null;
-    linkedin?: string | null;
-    facebook?: string | null;
-    instagram?: string | null;
-  };
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -588,6 +600,8 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  author?: T;
   roles?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -679,6 +693,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface AuthorsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  user?: T;
   jobTitle?: T;
   bio?: T;
   photo?: T;

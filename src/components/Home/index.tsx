@@ -84,68 +84,77 @@ const CompactCard = ({ card, locale }: CompactCardProps) => (
   </article>
 )
 
-type SupportingArticleProps = {
+type FeaturedStoryProps = {
   card: HomeCard
+  label: string
   locale: Locale
 }
 
 /**
- * A text-only companion to the section lead. It keeps its natural height so a
- * short list never stretches to match the featured card.
+ * Section lead: image first, then the headline and its metadata underneath.
+ * The image height is capped so the block keeps its presence without taking
+ * over the screen.
  */
-const SupportingArticle = ({ card, locale }: SupportingArticleProps) => (
-  <article className="group relative py-4">
-    <a className="after:absolute after:inset-0" href={cardHref(locale, card.href)}>
-      <h3 className="m-0 line-clamp-2 font-headline text-body-ui font-bold text-ink-900 transition-colors group-hover:text-green-600">
-        {card.title}
+const FeaturedStory = ({ card, label, locale }: FeaturedStoryProps) => (
+  <article className="group relative flex flex-col overflow-hidden rounded-card border border-line bg-surface shadow-xs transition-all duration-200 hover:border-gold-400">
+    <div className="relative h-[220px] overflow-hidden bg-green-100 sm:h-[260px] lg:h-[280px]">
+      <Image
+        alt={card.alt}
+        className="object-cover transition-transform duration-300 group-hover:scale-105"
+        fill
+        sizes="(min-width: 1024px) 56vw, 100vw"
+        src={cardImageUrl(card, 1200)}
+      />
+    </div>
+
+    <div className="flex flex-1 flex-col gap-3 p-5 sm:p-6">
+      <div>
+        <Badge>{label}</Badge>
+      </div>
+
+      <h3 className="m-0 line-clamp-3 font-headline text-h3 font-bold leading-snug text-ink-900 transition-colors group-hover:text-green-600">
+        <a className="after:absolute after:inset-0" href={cardHref(locale, card.href)}>
+          {card.title}
+        </a>
       </h3>
-    </a>
-    <div className="mt-2 flex items-center gap-2 text-meta text-ink-500">
-      <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500" />
-      <span>{card.meta}</span>
+
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3 text-meta text-ink-500">
+        <span className="min-w-0">{card.meta}</span>
+        {card.cta ? (
+          <span className="inline-flex shrink-0 items-center gap-1 font-bold text-green-600">
+            <span>{card.cta}</span>
+            <ArrowIcon className="h-4 w-4 transition-transform group-hover:translate-x-1 rtl:-scale-x-100 rtl:group-hover:-translate-x-1" />
+          </span>
+        ) : null}
+      </div>
     </div>
   </article>
 )
 
 type StandardCardProps = {
   card: HomeCard
-  /** Overrides the category badge, e.g. "خبر رئيسي" for a section lead. */
-  label?: string
   locale: Locale
-  large?: boolean
   sizes: string
 }
 
-const StandardCard = ({ card, label, large = false, locale, sizes }: StandardCardProps) => (
+const StandardCard = ({ card, locale, sizes }: StandardCardProps) => (
   <article className="group relative flex flex-col overflow-hidden rounded-card border border-line bg-surface shadow-xs transition-all duration-200 hover:border-gold-400">
-    <div
-      className={`relative overflow-hidden bg-green-100 ${
-        large ? 'aspect-[16/9]' : 'aspect-[3/2]'
-      }`}
-    >
+    <div className="relative aspect-[3/2] overflow-hidden bg-green-100">
       <Image
         alt={card.alt}
         className="object-cover transition-transform duration-300 group-hover:scale-105"
         fill
         sizes={sizes}
-        src={cardImageUrl(card, large ? 1200 : 800)}
+        src={cardImageUrl(card, 800)}
       />
     </div>
 
-    <div
-      className={`flex flex-1 flex-col justify-between ${
-        large ? 'p-6' : 'p-5'
-      }`}
-    >
+    <div className="flex flex-1 flex-col justify-between p-5">
       <div>
         <div className="mb-2">
-          <Badge>{label ?? card.category}</Badge>
+          <Badge>{card.category}</Badge>
         </div>
-        <h3
-          className={`m-0 mb-2 line-clamp-3 font-headline font-bold leading-snug text-ink-900 transition-colors group-hover:text-green-600 ${
-            large ? 'text-h3' : 'text-card-title'
-          }`}
-        >
+        <h3 className="m-0 mb-2 line-clamp-3 font-headline text-card-title font-bold leading-snug text-ink-900 transition-colors group-hover:text-green-600">
           <a className="after:absolute after:inset-0" href={cardHref(locale, card.href)}>
             {card.title}
           </a>
@@ -302,23 +311,15 @@ const CategorySection = ({ locale, section }: { locale: Locale; section: HomeSec
           hasCompact ? 'lg:grid-cols-12' : ''
         }`}
       >
-        <div className={hasCompact ? 'lg:col-span-8' : undefined}>
-          <StandardCard
-            card={section.featured}
-            label={featuredLabel}
-            large
-            locale={locale}
-            sizes={hasCompact ? '(min-width: 1024px) 66vw, 100vw' : '100vw'}
-          />
+        <div className={hasCompact ? 'lg:col-span-7' : undefined}>
+          <FeaturedStory card={section.featured} label={featuredLabel} locale={locale} />
         </div>
 
         {hasCompact ? (
-          <div className="border-y border-line lg:col-span-4">
-            <div className="flex flex-col divide-y divide-line">
-              {section.compact.map((card) => (
-                <SupportingArticle card={card} key={card.href} locale={locale} />
-              ))}
-            </div>
+          <div className="flex flex-col gap-4 lg:col-span-5">
+            {section.compact.map((card) => (
+              <CompactCard card={card} key={card.href} locale={locale} />
+            ))}
           </div>
         ) : null}
       </div>

@@ -147,6 +147,38 @@ export const breadcrumbJsonLd = (items: BreadcrumbItem[]): JsonLdObject => ({
   })),
 })
 
+/** Structured data for the static legal and editorial pages. */
+export const infoPageJsonLd = ({
+  dateModified,
+  description,
+  locale,
+  path,
+  title,
+  type,
+}: {
+  dateModified: string
+  description: string
+  locale: Locale
+  path: string
+  title: string
+  type: 'AboutPage' | 'ContactPage' | 'WebPage'
+}): JsonLdObject => {
+  const url = absoluteURL(path)
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': type,
+    '@id': `${url}#webpage`,
+    dateModified,
+    description,
+    inLanguage: schemaLanguage(locale),
+    isPartOf: { '@type': 'WebSite', '@id': `${siteURL()}/#website-${locale}` },
+    name: title,
+    publisher: organizationReference(),
+    url,
+  }
+}
+
 /**
  * `NewsArticle` for a published article. Author, section and image are only
  * included when the relationship is populated on the document.

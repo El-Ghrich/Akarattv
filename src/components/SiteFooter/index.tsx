@@ -14,18 +14,22 @@ export type SiteFooterProps = {
   locale: Locale
 }
 
-const socialGlyphs = (index: number) => {
-  switch (index) {
-    case 0:
-      return <span className="font-headline text-xs font-bold">in</span>
-    case 1:
-      return <span className="font-headline text-xs font-bold">𝕏</span>
-    case 2:
-      return <PlayIcon className="h-[18px] w-[18px]" />
-    default:
-      return <span className="font-headline text-xs font-bold">f</span>
+const socialGlyph = (label: string) => {
+  const name = label.toLowerCase()
+
+  if (name.includes('youtube')) return <PlayIcon className="h-[18px] w-[18px]" />
+  if (name.includes('instagram')) return <span className="font-headline text-xs font-bold">◎</span>
+  if (name.includes('facebook')) return <span className="font-headline text-xs font-bold">f</span>
+  if (name.includes('linkedin')) return <span className="font-headline text-xs font-bold">in</span>
+  if (name.includes('twitter') || name === 'x') {
+    return <span className="font-headline text-xs font-bold">𝕏</span>
   }
+
+  return <GlobeIcon className="h-[18px] w-[18px]" />
 }
+
+const footerHref = (link: HomeLink, locale: Locale): string =>
+  link.absolute ? link.href : `/${locale}${link.href}`
 
 export async function SiteFooter({ alternates, locale }: SiteFooterProps) {
   const content = homeContent[locale]
@@ -65,14 +69,16 @@ export async function SiteFooter({ alternates, locale }: SiteFooterProps) {
             </p>
 
             <div className="flex items-center gap-3 pt-2">
-              {footer.social.map((label, index) => (
+              {footer.social.map((link) => (
                 <a
-                  aria-label={label}
+                  aria-label={link.label}
                   className="flex h-9 w-9 items-center justify-center rounded-full border border-green-800 bg-green-900 text-gold-400 transition-colors hover:border-gold-500 hover:bg-gold-500 hover:text-white"
-                  href="#footer"
-                  key={label}
+                  href={link.href}
+                  key={link.href}
+                  rel="noreferrer"
+                  target="_blank"
                 >
-                  {socialGlyphs(index)}
+                  {socialGlyph(link.label)}
                 </a>
               ))}
             </div>
@@ -86,10 +92,7 @@ export async function SiteFooter({ alternates, locale }: SiteFooterProps) {
               <ul className="flex list-none flex-col gap-2.5 p-0 text-meta text-ink-300">
                 {column.links.map((link) => (
                   <li key={link.href + link.label}>
-                    <a
-                      className="transition-colors hover:text-white"
-                      href={`/${locale}${link.href}`}
-                    >
+                    <a className="transition-colors hover:text-white" href={footerHref(link, locale)}>
                       {link.label}
                     </a>
                   </li>

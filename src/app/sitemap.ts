@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
+import { infoLastUpdated, infoPageSlugs } from '@/content/infoPages'
 import { routing, type Locale } from '@/i18n/routing'
 import { absoluteURL } from '@/utilities/seo'
 import { articlePath, categoryPath, regionPath } from '@/utilities/urls'
@@ -127,6 +128,21 @@ const homeEntries = (): MetadataRoute.Sitemap => {
   }))
 }
 
+const infoEntries = (): MetadataRoute.Sitemap =>
+  infoPageSlugs.flatMap((slug) => {
+    const languages = Object.fromEntries(
+      routing.locales.map((locale) => [locale, absoluteURL(`/${locale}/${slug}`)]),
+    )
+
+    return routing.locales.map((locale) => ({
+      alternates: { languages: { ...languages, 'x-default': languages.ar } },
+      changeFrequency: 'monthly' as const,
+      lastModified: infoLastUpdated,
+      priority: 0.4,
+      url: absoluteURL(`/${locale}/${slug}`),
+    }))
+  })
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, categories, regions] = await Promise.all([
     collectEntries('articles', true),
@@ -136,6 +152,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...homeEntries(),
+    ...infoEntries(),
     ...archiveEntries(categories, categoryPath, 'weekly', 0.8),
     ...archiveEntries(regions, regionPath, 'weekly', 0.7),
     ...archiveEntries(articles, articlePath, 'daily', 0.9),

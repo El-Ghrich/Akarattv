@@ -1,6 +1,8 @@
 import type { Locale } from '@/i18n/routing'
 
 export type HomeLink = {
+  /** Use the root href as-is instead of prefixing it with the active locale. */
+  absolute?: boolean
   /** Present on grouped nav entries; each child is still a real archive route. */
   children?: HomeLink[]
   href: string
@@ -46,7 +48,7 @@ export type HomeContent = {
     }
     regionsTitle: string
     sectionsTitle: string
-    social: string[]
+    social: HomeLink[]
     tagline: string
   }
   header: {
@@ -128,11 +130,11 @@ const ar: HomeContent = {
   footer: {
     about: {
       links: [
-        { href: '#footer', label: 'من نحن ومهمتنا' },
-        { href: '#footer', label: 'الفريق وهيئة التحرير' },
-        { href: '#footer', label: 'ميثاق الشرف الصحفي' },
-        { href: '#newsletter-section', label: 'الإعلان والرعايات' },
-        { href: '#footer', label: 'الوظائف والفرص' },
+        { href: '/about', label: 'من نحن ومهمتنا' },
+        { href: '/about#team', label: 'الفريق وهيئة التحرير' },
+        { href: '/editorial-policy', label: 'ميثاق الشرف الصحفي' },
+        { href: '/contact#advertising', label: 'الإعلان والرعايات' },
+        { href: '/contact#careers', label: 'الوظائف والفرص' },
       ],
       title: 'عن المنصة',
     },
@@ -141,17 +143,21 @@ const ar: HomeContent = {
       'المنصة الإخبارية المستقلة الأولى المتخصصة في تغطية وتحليل أسواق العقار، التمويل، والتشريعات الاستثمارية في المغرب والعالم العربي برؤية مهنية رصينة.',
     policies: {
       links: [
-        { href: '#footer', label: 'اتصل بهيئة التحرير' },
-        { href: '#footer', label: 'سياسة الخصوصية' },
-        { href: '#footer', label: 'شروط الاستخدام' },
-        { href: '#footer', label: 'إخلاء المسؤولية المالية' },
-        { href: '#footer', label: 'خريطة الموقع' },
+        { href: '/contact', label: 'اتصل بهيئة التحرير' },
+        { href: '/privacy', label: 'سياسة الخصوصية' },
+        { href: '/terms', label: 'شروط الاستخدام' },
+        { href: '/terms#financial-disclaimer', label: 'إخلاء المسؤولية المالية' },
+        { absolute: true, href: '/sitemap.xml', label: 'خريطة الموقع' },
       ],
       title: 'السياسات والاتصال',
     },
     regionsTitle: 'المناطق',
     sectionsTitle: 'الأقسام الإخبارية',
-    social: ['LinkedIn', 'X (Twitter)', 'YouTube', 'Facebook'],
+    social: [
+      { href: 'https://www.youtube.com/@AkaratTv', label: 'YouTube' },
+      { href: 'https://www.facebook.com/Akarat.tv', label: 'Facebook' },
+      { href: 'https://www.instagram.com/akarattv', label: 'Instagram' },
+    ],
     tagline: 'تصميم تحريري رصين وموثوق',
   },
   regions: {
@@ -438,11 +444,11 @@ const fr: HomeContent = {
   footer: {
     about: {
       links: [
-        { href: '#footer', label: 'Qui sommes-nous et notre mission' },
-        { href: '#footer', label: "L'équipe et la rédaction" },
-        { href: '#footer', label: 'Charte déontologique' },
-        { href: '#newsletter-section', label: 'Publicité et partenariats' },
-        { href: '#footer', label: 'Carrières et opportunités' },
+        { href: '/about', label: 'Qui sommes-nous et notre mission' },
+        { href: '/about#team', label: "L'équipe et la rédaction" },
+        { href: '/editorial-policy', label: 'Charte déontologique' },
+        { href: '/contact#advertising', label: 'Publicité et partenariats' },
+        { href: '/contact#careers', label: 'Carrières et opportunités' },
       ],
       title: 'À propos',
     },
@@ -451,17 +457,21 @@ const fr: HomeContent = {
       "Le premier média indépendant spécialisé dans la couverture et l'analyse des marchés immobiliers, du financement et des réglementations d'investissement au Maroc et dans le monde arabe, avec une approche professionnelle rigoureuse.",
     policies: {
       links: [
-        { href: '#footer', label: 'Contacter la rédaction' },
-        { href: '#footer', label: 'Politique de confidentialité' },
-        { href: '#footer', label: "Conditions d'utilisation" },
-        { href: '#footer', label: 'Avertissement financier' },
-        { href: '#footer', label: 'Plan du site' },
+        { href: '/contact', label: 'Contacter la rédaction' },
+        { href: '/privacy', label: 'Politique de confidentialité' },
+        { href: '/terms', label: "Conditions d'utilisation" },
+        { href: '/terms#financial-disclaimer', label: 'Avertissement financier' },
+        { absolute: true, href: '/sitemap.xml', label: 'Plan du site' },
       ],
       title: 'Politiques et contact',
     },
     regionsTitle: 'Régions',
     sectionsTitle: 'Rubriques',
-    social: ['LinkedIn', 'X (Twitter)', 'YouTube', 'Facebook'],
+    social: [
+      { href: 'https://www.youtube.com/@AkaratTv', label: 'YouTube' },
+      { href: 'https://www.facebook.com/Akarat.tv', label: 'Facebook' },
+      { href: 'https://www.instagram.com/akarattv', label: 'Instagram' },
+    ],
     tagline: 'Un design éditorial sobre et fiable',
   },
   regions: {

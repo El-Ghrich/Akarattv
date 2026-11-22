@@ -1,5 +1,6 @@
 import { headers as getHeaders } from 'next/headers'
 
+import { infoPageSlugs, type InfoPageSlug } from '@/content/infoPages'
 import type { LocaleAlternate } from '@/i18n/alternates'
 import { routing, type Locale } from '@/i18n/routing'
 import { getArticleAlternates } from '@/utilities/articleAlternates'
@@ -10,11 +11,13 @@ import {
   getRegion,
   getRegionAlternates,
 } from '@/utilities/content'
+import { infoPageAlternates } from '@/utilities/infoPages'
 import { decodeSlug } from '@/utilities/urls'
 
 const ARTICLE_PATH = /^\/[^/]+\/articles\/([^/]+)\/?$/
 const CATEGORY_PATH = /^\/[^/]+\/categories\/([^/]+)\/?$/
 const REGION_PATH = /^\/[^/]+\/regions\/([^/]+)\/?$/
+const INFO_PATH = new RegExp(`^/[^/]+/(${infoPageSlugs.join('|')})/?$`)
 
 const homeAlternates = (): LocaleAlternate[] =>
   routing.locales.map((locale) => ({ href: '/', locale }))
@@ -74,6 +77,15 @@ export async function getLayoutChrome(locale: Locale): Promise<LayoutChrome> {
       alternates: region
         ? await getRegionAlternates(region.id, region.slug, locale)
         : unavailableAlternates(),
+      newsletterHref: `/${locale}#newsletter-section`,
+    }
+  }
+
+  const infoMatch = INFO_PATH.exec(pathname)
+
+  if (infoMatch?.[1]) {
+    return {
+      alternates: infoPageAlternates(infoMatch[1] as InfoPageSlug),
       newsletterHref: `/${locale}#newsletter-section`,
     }
   }

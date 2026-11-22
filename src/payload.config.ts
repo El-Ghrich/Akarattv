@@ -89,6 +89,9 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      beforeLogin: ['@/components/Admin/LoginChallenge#LoginChallenge'],
+    },
   },
   collections: [Users, Media, Authors, Categories, Regions, Articles, Videos],
   editor: lexicalEditor({

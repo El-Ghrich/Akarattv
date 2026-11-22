@@ -2,6 +2,15 @@ import type { CollectionConfig } from 'payload'
 
 import { isAdmin, isAdminFieldLevel, isAdminOrEditor, isAdminOrSelf } from '@/access'
 import { l } from '@/utilities/labels'
+import { CHALLENGE_COOKIE } from '@/utilities/loginCookies'
+import {
+  clearChallengeCookies,
+  clearLoginRateLimit,
+  createChallenge,
+  enforceLoginProtection,
+  isLoginRequest,
+  serializeCookie,
+} from '@/utilities/loginSecurity'
 import { relationID, syncUserAuthor } from '@/utilities/userAuthor'
 
 export const Users: CollectionConfig = {
@@ -15,7 +24,25 @@ export const Users: CollectionConfig = {
     defaultColumns: ['name', 'email', 'roles', 'author', 'createdAt'],
     group: l('Settings', 'Paramètres', 'الإعدادات'),
   },
-  auth: true,
+  auth: {
+    // Per-account lockout in addition to the per-IP KV limiter below.
+    maxLoginAttempts: 5,
+    lockTime: 15 * 60 * 1000,
+  },
+  endpoints: [
+    {
+      method: 'get',
+      path: '/login-challenge',
+      handler: async (req) => {
+        const { maxAge, question, token } = createChallenge(req)
+        const headers = new Headers({ 'Cache-Control': 'no-store' })
+
+        headers.append('Set-Cookie', serializeCookie(CHALLENGE_COOKIE, token, maxAge, true))
+
+        return Response.json({ question }, { headers })
+      },
+    },
+  ],
   access: {
     // Only admins and editors can access the admin panel
     admin: isAdminOrEditor,
@@ -29,6 +56,18 @@ export const Users: CollectionConfig = {
     delete: isAdmin,
   },
   hooks: {
+    beforeOperation: [
+      async ({ args, operation, req }) => {
+        // Runs before password verification, so bad challenges and flooded IPs
+        // never reach the authentication operation. First-register calls
+        // payload.login internally and is exempt via its request path.
+        if (operation === 'login' && isLoginRequest(req)) {
+          await enforceLoginProtection(req)
+        }
+
+        return args
+      },
+    ],
     beforeValidate: [
       ({ data }) => {
         if (!data) return data
@@ -81,6 +120,13 @@ export const Users: CollectionConfig = {
           name: typeof doc.name === 'string' ? doc.name : '',
           authorID,
         })
+      },
+    ],
+    afterLogin: [
+      async ({ req }) => {
+        // A solved challenge and the IP counter are single-use.
+        await clearLoginRateLimit(req)
+        clearChallengeCookies(req)
       },
     ],
   },

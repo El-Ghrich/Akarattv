@@ -1,4 +1,5 @@
 import { withPayload } from '@payloadcms/next/withPayload'
+import { withSentryConfig } from '@sentry/nextjs/config'
 import type { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
 import path from 'path'
@@ -117,4 +118,11 @@ const nextConfig: NextConfig = {
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
-export default withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false })
+export default withSentryConfig(withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false }), {
+  org: 'akarat-tv',
+  project: 'javascript-nextjs',
+  // Source map upload only runs where SENTRY_AUTH_TOKEN is set (Vercel).
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+})

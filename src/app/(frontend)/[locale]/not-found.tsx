@@ -1,11 +1,13 @@
+import type { Metadata } from 'next'
 import { headers as getHeaders } from 'next/headers'
 import { hasLocale } from 'next-intl'
-import { getLocale, getTranslations } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import React from 'react'
 
+import { NotFoundView, type NotFoundArticle } from '@/components/NotFoundView'
+import { notFoundContent } from '@/content/notFound'
 import config from '@/payload.config'
-import { Link } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
 
 type TranslatedArticle = {
@@ -15,8 +17,7 @@ type TranslatedArticle = {
 
 type NotFoundContext = {
   locale: Locale
-  otherArticle: TranslatedArticle | null
-  otherLocale: Locale
+  otherArticle: NotFoundArticle | null
 }
 
 const articlePathname = /^\/([^/]+)\/articles\/([^/]+)\/?$/
@@ -44,6 +45,7 @@ const getNotFoundContext = async (): Promise<NotFoundContext | null> => {
   if (!pathname) return null
 
   const match = articlePathname.exec(pathname)
+
   if (!match) return null
 
   const rawLocale = match[1]
@@ -74,50 +76,24 @@ const getNotFoundContext = async (): Promise<NotFoundContext | null> => {
   return {
     locale,
     otherArticle:
-      article?.slug && article.title ? { slug: article.slug, title: article.title } : null,
-    otherLocale,
+      article?.slug && article.title
+        ? { locale: otherLocale, slug: article.slug, title: article.title }
+        : null,
   }
 }
 
-export default async function ArticleNotFound() {
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale()
+
+  return {
+    robots: { follow: false, index: false },
+    title: notFoundContent[locale].title,
+  }
+}
+
+export default async function LocalizedNotFound() {
   const context = await getNotFoundContext()
-  const t = await getTranslations('NotFound')
   const locale = context?.locale ?? (await getLocale())
-  const other = context?.otherArticle
-  const otherLocale = context?.otherLocale
 
-  return (
-    <main className="not-found">
-      <p className="not-found__code">404</p>
-
-      {other && otherLocale ? (
-        <>
-          <h1 className="not-found__title">{t('unavailableTitle')}</h1>
-          <p className="not-found__text">{t('unavailableText')}</p>
-          <p className="not-found__other">
-            <span>{t('availableIn')}</span>{' '}
-            <span dir={otherLocale === 'ar' ? 'rtl' : 'ltr'} lang={otherLocale}>
-              {other.title}
-            </span>
-          </p>
-          <Link
-            className="not-found__link"
-            href={`/articles/${encodeURIComponent(other.slug)}`}
-            locale={otherLocale}
-          >
-            {t('readInOther')}
-          </Link>
-        </>
-      ) : (
-        <>
-          <h1 className="not-found__title">{t('title')}</h1>
-          <p className="not-found__text">{t('text')}</p>
-        </>
-      )}
-
-      <Link className="not-found__link not-found__link--secondary" href="/" locale={locale}>
-        {t('home')}
-      </Link>
-    </main>
-  )
+  return <NotFoundView locale={locale} otherArticle={context?.otherArticle} />
 }

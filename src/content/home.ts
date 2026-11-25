@@ -39,6 +39,7 @@ export type HomeContent = {
       links: HomeLink[]
       title: string
     }
+    cookieSettings: string
     copyright: string
     description: string
     /** Column titles; the links come from Payload. */
@@ -138,6 +139,7 @@ const ar: HomeContent = {
       ],
       title: 'عن المنصة',
     },
+    cookieSettings: 'إعدادات ملفات تعريف الارتباط',
     copyright: 'جميع الحقوق محفوظة © 2026 منصة "عقارات تيفي" (Akarat TV).',
     description:
       'المنصة الإخبارية المستقلة الأولى المتخصصة في تغطية وتحليل أسواق العقار، التمويل، والتشريعات الاستثمارية في المغرب والعالم العربي برؤية مهنية رصينة.',
@@ -452,6 +454,7 @@ const fr: HomeContent = {
       ],
       title: 'À propos',
     },
+    cookieSettings: 'Paramètres des témoins',
     copyright: 'Tous droits réservés © 2026 Akarat TV.',
     description:
       "Le premier média indépendant spécialisé dans la couverture et l'analyse des marchés immobiliers, du financement et des réglementations d'investissement au Maroc et dans le monde arabe, avec une approche professionnelle rigoureuse.",

@@ -747,65 +747,102 @@ html[lang='ar'] .article-content li {
   }
 }
 
-.not-found {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  min-height: 60vh;
-  padding: 48px 24px;
-  text-align: center;
+/* --------------------------------------------------------------------------
+ * 404 page — full-bleed editorial recovery screen
+ *
+ * The markup uses Tailwind utilities; these rules only cover the decorative
+ * grid, animated orbits and gradient numeral that utilities cannot express.
+ * -------------------------------------------------------------------------- */
+
+.not-found-shell {
+  min-height: 68vh;
 }
 
-.not-found__code {
-  margin: 0;
-  color: rgb(120, 120, 120);
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
+.not-found-grid {
+  background-image:
+    linear-gradient(rgba(221, 190, 111, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(221, 190, 111, 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(circle at 72% 45%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(circle at 72% 45%, #000 0%, transparent 72%);
 }
 
-.not-found__title {
-  margin: 0;
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  line-height: 1.2;
+.not-found-number {
+  font-family: var(--font-headline);
+  font-size: clamp(8rem, 21vw, 16rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.08em;
+  background: linear-gradient(135deg, #ebd59c 0%, #c9a24b 45%, #8f6b1f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.08);
+  filter: drop-shadow(0 28px 60px rgba(0, 0, 0, 0.35));
 }
 
-.not-found__text {
-  max-width: 520px;
-  margin: 0;
-  color: #3a423b;
+.not-found-orbit {
+  animation: not-found-spin 30s linear infinite;
 }
 
-.not-found__other {
-  margin: 8px 0 0;
-  font-size: 1.05rem;
+.not-found-orbit::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--color-gold-400);
+  box-shadow: 0 0 18px rgba(221, 190, 111, 0.8);
 }
 
-.not-found__link {
-  margin-top: 8px;
-  padding: 8px 16px;
-  border: 1px solid #1f4f0c;
-  border-radius: 999px;
-  color: #0f2e04;
-  font-size: 0.9rem;
-  text-decoration: none;
+.not-found-orbit--reverse {
+  animation-direction: reverse;
+  animation-duration: 38s;
 }
 
-.not-found__link:hover {
-  background: #0f2e04;
-  color: #ffffff;
+.not-found-orbit--reverse::after {
+  background: var(--color-ink-300);
+  box-shadow: 0 0 18px rgba(184, 191, 184, 0.6);
 }
 
-.not-found__link--secondary {
-  margin-top: 0;
-  border-color: transparent;
-  color: #6b746c;
+@keyframes not-found-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.not-found__link--secondary:hover {
-  background: transparent;
-  color: #111712;
+@media (prefers-reduced-motion: reduce) {
+  .not-found-orbit {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * Consent banner — fixed surface with a restrained entrance animation
+ * -------------------------------------------------------------------------- */
+
+.consent-banner {
+  animation: consent-rise 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes consent-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .consent-banner {
+    animation: none;
+  }
 }
 
 /* --------------------------------------------------------------------------

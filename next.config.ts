@@ -24,6 +24,11 @@ try {
 const nextConfig: NextConfig = {
   // Do not advertise the framework in a response header.
   poweredByHeader: false,
+  experimental: {
+    // The public site and Payload admin use separate root layouts, so unmatched
+    // URLs need a standalone 404 document instead of a layout-based boundary.
+    globalNotFound: true,
+  },
   images: {
     /**
      * Only the widths that exist as real objects in the bucket. Next's defaults

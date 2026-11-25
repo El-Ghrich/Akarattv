@@ -1,12 +1,14 @@
 import Image from 'next/image'
 import React from 'react'
 
+import { CookieSettingsButton } from '@/components/ConsentProvider/CookieSettingsButton'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher'
 import { GlobeIcon, PlayIcon } from '@/components/icons'
 import { homeContent, type HomeLink } from '@/content/home'
 import type { LocaleAlternate } from '@/i18n/alternates'
 import { Link } from '@/i18n/navigation'
 import type { Locale } from '@/i18n/routing'
+import { analyticsEnabled } from '@/utilities/analytics'
 import { getFooterNav } from '@/utilities/content'
 
 export type SiteFooterProps = {
@@ -116,6 +118,12 @@ export async function SiteFooter({ alternates, locale }: SiteFooterProps) {
             </div>
             <span aria-hidden="true">•</span>
             <span>{footer.tagline}</span>
+            {analyticsEnabled ? (
+              <>
+                <span aria-hidden="true">•</span>
+                <CookieSettingsButton label={footer.cookieSettings} />
+              </>
+            ) : null}
           </div>
         </div>
       </div>

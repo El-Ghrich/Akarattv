@@ -5,10 +5,13 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
+import { ConsentProvider } from '@/components/ConsentProvider'
+import { GoogleAnalytics } from '@/components/GoogleAnalytics'
 import { JsonLd } from '@/components/JsonLd'
 import { SiteFooter } from '@/components/SiteFooter'
 import { SiteHeader } from '@/components/SiteHeader'
 import { routing } from '@/i18n/routing'
+import { analyticsEnabled } from '@/utilities/analytics'
 import { getLayoutChrome } from '@/utilities/layoutChrome'
 import {
   organizationJsonLd,
@@ -114,9 +117,14 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       <body className="flex min-h-screen flex-col bg-canvas text-ink-900 antialiased">
         <JsonLd data={[organizationJsonLd(), websiteJsonLd(locale)]} />
         <NextIntlClientProvider>
-          <SiteHeader alternates={alternates} locale={locale} newsletterHref={newsletterHref} />
-          {children}
-          <SiteFooter alternates={alternates} locale={locale} />
+          <ConsentProvider analyticsEnabled={analyticsEnabled} locale={locale}>
+            <SiteHeader alternates={alternates} locale={locale} newsletterHref={newsletterHref} />
+            {children}
+            <SiteFooter alternates={alternates} locale={locale} />
+            <React.Suspense fallback={null}>
+              <GoogleAnalytics />
+            </React.Suspense>
+          </ConsentProvider>
         </NextIntlClientProvider>
       </body>
     </html>

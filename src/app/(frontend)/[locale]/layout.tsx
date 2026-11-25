@@ -7,6 +7,7 @@ import React from 'react'
 
 import { ConsentProvider } from '@/components/ConsentProvider'
 import { GoogleAnalytics } from '@/components/GoogleAnalytics'
+import { ConsentModeScript } from '@/components/GoogleAnalytics/ConsentModeScript'
 import { JsonLd } from '@/components/JsonLd'
 import { SiteFooter } from '@/components/SiteFooter'
 import { SiteHeader } from '@/components/SiteHeader'
@@ -121,6 +122,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
             <SiteHeader alternates={alternates} locale={locale} newsletterHref={newsletterHref} />
             {children}
             <SiteFooter alternates={alternates} locale={locale} />
+            {analyticsEnabled ? <ConsentModeScript /> : null}
             <React.Suspense fallback={null}>
               <GoogleAnalytics />
             </React.Suspense>

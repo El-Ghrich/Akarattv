@@ -94,8 +94,9 @@ export async function SiteHeader({
                 <Image
                   alt={content.siteName}
                   className="h-9 w-auto sm:h-11"
+                  // Above the fold, but far too small to deserve a preload.
                   height={391}
-                  priority
+                  loading="eager"
                   src={logo}
                   width={742}
                 />

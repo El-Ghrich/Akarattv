@@ -188,9 +188,12 @@ const BrandHero = ({ content, locale }: { content: HomeContent; locale: Locale }
       <Image
         alt={content.hero.alt}
         className="object-cover object-center"
+        // LCP candidate: preload in <head>, high fetch priority, never lazy.
+        // `preload` is the Next 16 replacement for the deprecated `priority`.
+        fetchPriority="high"
         fill
-        priority
-        sizes="(min-width: 1280px) 1280px, 100vw"
+        preload
+        sizes="(max-width: 640px) calc(100vw - 32px), (min-width: 1328px) 1280px, calc(100vw - 48px)"
         src={unsplashUrl(content.hero.imageId, 1600)}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-green-950/95 via-green-950/85 to-green-950/70" />
@@ -239,8 +242,12 @@ const HeroZone = ({ content, locale }: { content: HomeContent; locale: Locale })
         <Image
           alt={featured.alt}
           className="object-cover transition-transform duration-500 group-hover:scale-105"
+          // This card is partly visible on the first screen. Load it eagerly
+          // with high priority, but don't preload a second LCP competitor.
+          fetchPriority="high"
           fill
-          sizes="(min-width: 1024px) 66vw, 100vw"
+          loading="eager"
+          sizes="(max-width: 640px) calc(100vw - 32px), (min-width: 1024px) 66vw, calc(100vw - 48px)"
           src={cardImageUrl(featured, 1200)}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-green-950 via-green-950/75 to-transparent" />

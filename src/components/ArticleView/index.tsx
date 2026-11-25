@@ -29,7 +29,13 @@ import { categoryHref } from '@/utilities/urls'
  * Explicit sizes keep the browser from downloading a wider R2 derivative than
  * the layout can ever use.
  */
-const HERO_SIZES = '(min-width: 1064px) 1000px, 100vw'
+/**
+ * The article hero is capped at 1000px, but the page still has 16px/24px of
+ * horizontal padding. Telling the browser the real painted width avoids
+ * pulling a 1200px variant on a phone.
+ */
+const HERO_SIZES =
+  '(max-width: 640px) calc(100vw - 32px), (min-width: 1064px) 1000px, calc(100vw - 48px)'
 
 const isDoc = <T,>(value: T | number | null | undefined): value is T =>
   value !== null && typeof value === 'object'
@@ -313,10 +319,14 @@ export function ArticleView({
           <div className="aspect-[16/9] w-full overflow-hidden">
             <Image
               alt={heroImage.alt ?? article.title}
-              // The hero is the largest element in the initial viewport.
-              priority
+              // Next 16: `preload` replaces the deprecated `priority` prop and
+              // emits a responsive <link rel="preload"> in <head>. Pairing it
+              // with fetchPriority="high" also marks the <img> itself as high
+              // priority. Omitting `loading` keeps it eager (never lazy).
               className="h-full w-full object-cover"
+              fetchPriority="high"
               height={heroImage.height ?? 900}
+              preload
               sizes={HERO_SIZES}
               src={heroImage.url}
               width={heroImage.width ?? 1600}

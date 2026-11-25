@@ -30,7 +30,7 @@ export const consentContent: Record<Locale, ConsentContent> = {
     banner: {
       accept: 'قبول الكوكيز',
       description:
-        'نستخدم كوكيز للتحليلات لقياس الزيارات وتحسين الموقع، ولا تُفعّل إلا بعد موافقتك.',
+        'نستخدم كوكيز للتحليلات لقياس الزيارات. تُفعّل بعد موافقتك، وإذا رفضت تُرسل إحصاءات دون كوكيز إلى Google.',
       privacyLabel: 'سياسة الخصوصية',
       reject: 'رفض الكوكيز',
       settings: 'الإعدادات',
@@ -40,7 +40,7 @@ export const consentContent: Record<Locale, ConsentContent> = {
     preferences: {
       accept: 'قبول الكوكيز',
       analyticsDescription:
-        'تساعدنا على معرفة الصفحات الأكثر قراءة ومصدر الزيارات. لا تُفعّل إلا بعد موافقتك، ويمكنك سحب الموافقة في أي وقت.',
+        'تساعدنا على معرفة الصفحات الأكثر قراءة ومصدر الزيارات. لا تُحفظ الكوكيز قبل موافقتك؛ وإذا رفضت تُرسل إشارات قياس دون معرّفات تتبع ويمكن سحب الموافقة في أي وقت.',
       analyticsTitle: 'كوكيز التحليلات (Google Analytics 4)',
       close: 'إغلاق',
       essentialDescription:
@@ -57,7 +57,7 @@ export const consentContent: Record<Locale, ConsentContent> = {
     banner: {
       accept: 'Accepter les témoins',
       description:
-        'Nous utilisons des témoins d’analyse pour mesurer l’audience et améliorer le site. Ils ne s’activent qu’après votre accord.',
+        'Nous utilisons des témoins d’analyse pour mesurer l’audience. Ils ne sont déposés qu’après votre accord ; en cas de refus, des mesures sans témoins sont envoyées à Google.',
       privacyLabel: 'Politique de confidentialité',
       reject: 'Refuser les témoins',
       settings: 'Paramètres',
@@ -67,7 +67,7 @@ export const consentContent: Record<Locale, ConsentContent> = {
     preferences: {
       accept: 'Accepter les témoins',
       analyticsDescription:
-        'Ils nous aident à savoir quelles pages sont les plus lues et d’où viennent les visites. Actifs uniquement après votre accord, et retirables à tout moment.',
+        'Ils nous aident à savoir quelles pages sont les plus lues et d’où viennent les visites. Aucun témoin n’est déposé avant votre accord ; en cas de refus, Google reçoit des mesures sans identifiant de suivi. Retirables à tout moment.',
       analyticsTitle: 'Témoins d’analyse (Google Analytics 4)',
       close: 'Fermer',
       essentialDescription:

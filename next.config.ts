@@ -31,10 +31,11 @@ const nextConfig: NextConfig = {
   },
   images: {
     /**
-     * Only the widths that exist as real objects in the bucket. Next's defaults
-     * go up to 3840, which would make it request variants we never generate.
+     * Keep the ladder short, but include 640 so small phones at 2x DPR don't
+     * have to download an 800px or 1200px variant. The optimizer generates
+     * these widths on demand; no source object has to match them exactly.
      */
-    deviceSizes: [400, 800, 1200, 1600],
+    deviceSizes: [400, 640, 800, 1200, 1600],
     // Fixed-size images (the 48px author avatar) pick from here.
     imageSizes: [48, 96, 128, 256, 384],
     // The optimizer prefers AVIF, then WebP, before falling back to the source.

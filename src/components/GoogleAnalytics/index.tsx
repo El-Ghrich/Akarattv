@@ -2,7 +2,7 @@
 
 import { GoogleTagManager as NextGoogleTagManager } from '@next/third-parties/google'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { useConsent } from '@/components/ConsentProvider'
 import { usePathname } from '@/i18n/navigation'
@@ -22,18 +22,23 @@ const isTrackedRoute = (pathname: string, searchParams: URLSearchParams): boolea
   )
 }
 
-type ConsentMode = 'default' | 'update'
 type AnalyticsStorage = 'granted' | 'denied'
 
 /**
- * Push a Consent Mode v2 command onto the same dataLayer the GTM tag uses. Ads
- * stay permanently denied — only analytics is toggled.
+ * Consent Mode v2 has no persistence of its own: the default command is sent
+ * from `ConsentModeScript` before GTM loads, and every consent change has to be
+ * pushed again on the page where it happens.
+ *
+ * Ads stay permanently denied — only analytics storage follows the visitor's
+ * choice. With `analytics_storage: denied` the GA4 tag inside the container
+ * still sends cookieless pings, which Google uses for aggregated measurement
+ * and modelling. No analytics cookies are written in that state.
  */
-const pushConsent = (mode: ConsentMode, analyticsStorage: AnalyticsStorage): void => {
+const pushConsentUpdate = (analyticsStorage: AnalyticsStorage): void => {
   const dataLayer = (window.dataLayer ??= [])
   dataLayer.push([
     'consent',
-    mode,
+    'update',
     {
       ad_personalization: 'denied',
       ad_storage: 'denied',
@@ -44,47 +49,39 @@ const pushConsent = (mode: ConsentMode, analyticsStorage: AnalyticsStorage): voi
 }
 
 /**
- * Consent-gated Google Tag Manager container, loaded via Next's third-party
- * component. That component has no consent props, so the gating lives here:
+ * Advanced Consent Mode v2 container.
  *
- * - The container is only mounted after explicit consent and never on admin,
- *   API or live-preview URLs, so no Google script is requested pre-decision.
- * - Consent Mode starts fully denied; `update` follows every consent change.
- *   Withdrawal stops hits without reloading the already-loaded container.
- * - `update` is queued one commit *before* the tag mounts. React runs child
- *   (Script) effects before parent effects, so doing both in one commit could
- *   let GTM fire its tags while storage was still denied and drop the first
- *   page view.
+ * GTM is loaded on every public route, not only after consent. That is what
+ * allows cookieless visits to be measured: the early `consent default` script
+ * keeps all storage denied until a choice is made, then this component pushes
+ * `update` on accept/reject/withdrawal. Admin, API and live-preview URLs never
+ * mount the tag at all.
  *
- * The GA4 tag lives inside the container; page views are handled by GA4
- * Enhanced Measurement, so no manual `page_view` or history tracking is needed.
+ * Page views come from GA4 Enhanced Measurement inside the container, so no
+ * manual `page_view` or history tracking is needed here.
  */
 export function GoogleAnalytics() {
   const { consent } = useConsent()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const lastPushed = useRef<AnalyticsStorage | null>(null)
 
   const trackedRoute = useMemo(
     () => isTrackedRoute(pathname, new URLSearchParams(searchParams.toString())),
     [pathname, searchParams],
   )
 
-  const active = consent === 'granted' && trackedRoute
-  const [tagReady, setTagReady] = useState(false)
-
-  // First command GTM will ever see: everything denied.
   useEffect(() => {
-    pushConsent('default', 'denied')
-  }, [])
+    if (!trackedRoute || consent === null) return
 
-  useEffect(() => {
-    if (!active) setTagReady(false)
+    const next: AnalyticsStorage = consent === 'granted' ? 'granted' : 'denied'
+    if (lastPushed.current === next) return
 
-    pushConsent('update', active ? 'granted' : 'denied')
-    if (active) setTagReady(true)
-  }, [active])
+    pushConsentUpdate(next)
+    lastPushed.current = next
+  }, [consent, trackedRoute])
 
-  if (!tagReady || !gtmContainerId) return null
+  if (!trackedRoute || !gtmContainerId) return null
 
   return <NextGoogleTagManager gtmId={gtmContainerId} />
 }

@@ -1,13 +1,13 @@
 /**
- * GA4 is opt-in. An empty or malformed Measurement ID disables both the script
- * and the consent UI, so a local or preview build never asks for a decision it
- * cannot actually honour.
+ * The GTM container is opt-in. An empty or malformed container ID disables both
+ * the tag and the consent UI, so a local or preview build never asks for a
+ * decision it cannot actually honour.
  *
- * `NEXT_PUBLIC_GA_MEASUREMENT_ID` is inlined at build time by Next.js, which is
- * why this module can be imported from a Client Component.
+ * `NEXT_PUBLIC_GTM_ID` is inlined at build time by Next.js, which is why this
+ * module can be imported from a Client Component.
  */
-const rawMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() ?? ''
+const rawContainerId = process.env.NEXT_PUBLIC_GTM_ID?.trim() ?? ''
 
-export const gaMeasurementId = /^G-[A-Z0-9]+$/.test(rawMeasurementId) ? rawMeasurementId : null
+export const gtmContainerId = /^GTM-[A-Z0-9]+$/.test(rawContainerId) ? rawContainerId : null
 
-export const analyticsEnabled = gaMeasurementId !== null
+export const analyticsEnabled = gtmContainerId !== null

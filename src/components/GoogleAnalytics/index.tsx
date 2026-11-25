@@ -1,14 +1,14 @@
 'use client'
 
-import { GoogleAnalytics as NextGoogleAnalytics } from '@next/third-parties/google'
+import { GoogleTagManager as NextGoogleTagManager } from '@next/third-parties/google'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useConsent } from '@/components/ConsentProvider'
 import { usePathname } from '@/i18n/navigation'
-import { gaMeasurementId } from '@/utilities/analytics'
+import { gtmContainerId } from '@/utilities/analytics'
 
-/** Paths that must never be measured, even if a Measurement ID is configured. */
+/** Paths that must never be measured, even if a container ID is configured. */
 const EXCLUDED_PATH_PREFIXES = ['/admin', '/api', '/my-route', '/preview']
 
 /** Payload live preview and draft URLs carry one of these query keys. */
@@ -26,8 +26,8 @@ type ConsentMode = 'default' | 'update'
 type AnalyticsStorage = 'granted' | 'denied'
 
 /**
- * Push a Consent Mode v2 command onto the same dataLayer the third-party
- * component uses. Ads stay permanently denied — only analytics is toggled.
+ * Push a Consent Mode v2 command onto the same dataLayer the GTM tag uses. Ads
+ * stay permanently denied — only analytics is toggled.
  */
 const pushConsent = (mode: ConsentMode, analyticsStorage: AnalyticsStorage): void => {
   const dataLayer = (window.dataLayer ??= [])
@@ -44,20 +44,20 @@ const pushConsent = (mode: ConsentMode, analyticsStorage: AnalyticsStorage): voi
 }
 
 /**
- * GA4 via Next's `GoogleAnalytics` component, which loads `gtag.js` after
- * hydration. That component has no consent props, so the gating lives here:
+ * Consent-gated Google Tag Manager container, loaded via Next's third-party
+ * component. That component has no consent props, so the gating lives here:
  *
- * - The tag is only mounted after explicit consent and never on admin, API or
- *   live-preview URLs, so no Google script is requested before a decision.
+ * - The container is only mounted after explicit consent and never on admin,
+ *   API or live-preview URLs, so no Google script is requested pre-decision.
  * - Consent Mode starts fully denied; `update` follows every consent change.
- *   Withdrawal stops hits without reloading the already-loaded script.
+ *   Withdrawal stops hits without reloading the already-loaded container.
  * - `update` is queued one commit *before* the tag mounts. React runs child
- *   (Script) effects before parent effects, so doing both in one commit would
- *   let GA's `config` run while storage was still denied and drop the first
+ *   (Script) effects before parent effects, so doing both in one commit could
+ *   let GTM fire its tags while storage was still denied and drop the first
  *   page view.
  *
- * Page views are handled by GA4 Enhanced Measurement; no manual `page_view` or
- * history tracking is needed (and would double-count).
+ * The GA4 tag lives inside the container; page views are handled by GA4
+ * Enhanced Measurement, so no manual `page_view` or history tracking is needed.
  */
 export function GoogleAnalytics() {
   const { consent } = useConsent()
@@ -72,7 +72,7 @@ export function GoogleAnalytics() {
   const active = consent === 'granted' && trackedRoute
   const [tagReady, setTagReady] = useState(false)
 
-  // First command gtag.js will ever see: everything denied.
+  // First command GTM will ever see: everything denied.
   useEffect(() => {
     pushConsent('default', 'denied')
   }, [])
@@ -84,9 +84,9 @@ export function GoogleAnalytics() {
     if (active) setTagReady(true)
   }, [active])
 
-  if (!tagReady || !gaMeasurementId) return null
+  if (!tagReady || !gtmContainerId) return null
 
-  return <NextGoogleAnalytics gaId={gaMeasurementId} />
+  return <NextGoogleTagManager gtmId={gtmContainerId} />
 }
 
 export default GoogleAnalytics

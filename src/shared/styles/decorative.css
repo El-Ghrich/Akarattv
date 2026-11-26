@@ -1,0 +1,30 @@
+/*
+ * Decorative vector backdrops, pre-rasterized to WebP. The source SVGs are
+ * 850 KB and 200 KB of paths that every visitor would otherwise parse and
+ * paint; the WebP exports are ~29 KB and ~23 KB. A smaller export is served to
+ * phones so they do not decode a desktop-sized bitmap.
+ */
+.newsletter-backdrop,
+.youtube-backdrop {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.newsletter-backdrop {
+  background-image: url('/bg-960.webp');
+}
+
+.youtube-backdrop {
+  background-image: url('/bg-youtube-960.webp');
+}
+
+@media (min-width: 768px) {
+  .newsletter-backdrop {
+    background-image: url('/bg-1920.webp');
+  }
+
+  .youtube-backdrop {
+    background-image: url('/bg-youtube-1920.webp');
+  }
+}

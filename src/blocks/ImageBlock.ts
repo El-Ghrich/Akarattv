@@ -1,5 +1,5 @@
 import type { Block } from 'payload'
-import { l } from '@/utilities/labels'
+import { l } from '@/shared/lib/labels'
 
 export const ImageBlock: Block = {
   slug: 'imageBlock',

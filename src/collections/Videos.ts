@@ -1,9 +1,9 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminOrEditor } from '@/access'
-import { revalidationTags } from '@/utilities/cacheTags'
-import { l } from '@/utilities/labels'
-import { revalidateContent } from '@/utilities/revalidate'
-import { extractYouTubeId, fetchYouTubeMetadata, youtubeThumbnail } from '@/utilities/youtube'
+import { revalidationTags } from '@/shared/lib/cacheTags'
+import { l } from '@/shared/lib/labels'
+import { revalidateContent } from '@/shared/lib/revalidate'
+import { extractYouTubeId, fetchYouTubeMetadata, youtubeThumbnail } from '@/shared/lib/youtube'
 
 /**
  * Videos from the Akarat TV YouTube channel, shown in the homepage carousel.

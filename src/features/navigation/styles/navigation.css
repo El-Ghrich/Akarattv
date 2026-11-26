@@ -1,0 +1,137 @@
+/*
+ * Header categories. The three housing archives share one entry, but French
+ * labels still overflow beside the logo and the newsletter button, so the row
+ * is a horizontally scrollable carousel with arrow controls. The scrollbar is
+ * hidden; the arrows and swipe/wheel both move the track.
+ */
+.site-nav {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.site-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.site-nav-group > summary {
+  position: relative;
+  list-style: none;
+}
+
+.site-nav-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+.site-nav-group[open] .site-nav-chevron {
+  transform: rotate(180deg);
+}
+
+.site-nav-dropdown {
+  position: fixed;
+  z-index: 60;
+  inset: auto;
+  min-width: 260px;
+  padding: 8px;
+  border: 1px solid rgb(235 213 156 / 0.3);
+  border-radius: 12px;
+  background: var(--color-green-900);
+  box-shadow: 0 20px 45px rgb(0 0 0 / 0.4);
+  animation: site-nav-dropdown-in 140ms ease-out;
+}
+
+/* The small pointer that ties the panel back to its trigger. */
+.site-nav-dropdown::before {
+  content: '';
+  position: absolute;
+  inset-block-start: -6px;
+  inset-inline-start: 26px;
+  width: 10px;
+  height: 10px;
+  border-block-start: 1px solid rgb(235 213 156 / 0.3);
+  border-inline-start: 1px solid rgb(235 213 156 / 0.3);
+  background: var(--color-green-900);
+  transform: rotate(45deg);
+}
+
+.site-nav-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: rgb(255 255 255 / 0.92);
+  font-family: var(--font-headline);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.site-nav-dropdown-link + .site-nav-dropdown-link {
+  margin-block-start: 2px;
+}
+
+.site-nav-dropdown-link:hover,
+.site-nav-dropdown-link[aria-current='true'] {
+  background: var(--color-green-800);
+  color: var(--color-gold-300);
+}
+
+.site-nav-dropdown-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-gold-500);
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.site-nav-dropdown-link:hover .site-nav-dropdown-dot,
+.site-nav-dropdown-link[aria-current='true'] .site-nav-dropdown-dot {
+  opacity: 1;
+}
+
+/* Mobile keeps the group inline instead of floating it over the menu. */
+.site-nav-sublist {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-block-start: 4px;
+  margin-inline-start: 12px;
+  padding-inline-start: 10px;
+  border-inline-start: 2px solid var(--color-green-700);
+}
+
+@keyframes site-nav-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav-dropdown {
+    animation: none;
+  }
+}
+
+/* Subtle architectural dot grid used by the newsletter bands. */
+.pattern-architectural {
+  background-image:
+    radial-gradient(rgb(201 162 75 / 0.12) 1px, transparent 1px),
+    radial-gradient(rgb(201 162 75 / 0.08) 1px, transparent 1px);
+  background-position:
+    0 0,
+    16px 16px;
+  background-size: 32px 32px;
+}

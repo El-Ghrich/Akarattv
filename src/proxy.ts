@@ -2,7 +2,7 @@ import createMiddleware from 'next-intl/middleware'
 import { type NextFetchEvent, NextRequest, NextResponse } from 'next/server'
 
 import { routing } from './i18n/routing'
-import { findRedirect } from './utilities/redirects'
+import { findRedirect } from './shared/lib/redirects'
 
 const handleI18nRouting = createMiddleware(routing)
 

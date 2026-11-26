@@ -4,14 +4,14 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
-import { JsonLd } from '@/components/JsonLd'
-import { StandardCard } from '@/components/Home'
-import { HomeIcon } from '@/components/icons'
+import { JsonLd } from '@/features/seo/components/JsonLd'
+import { StandardCard } from '@/shared/ui/contentCards'
+import { HomeIcon } from '@/shared/ui/icons'
 import { getPathname } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
-import { getRegionAlternates, getRegionPage } from '@/utilities/content'
-import { alternateLanguages, breadcrumbJsonLd, openGraphLocale, siteName } from '@/utilities/seo'
-import { decodeSlug, regionPath } from '@/utilities/urls'
+import { getRegionAlternates, getRegionPage } from '@/features/regions/lib/regions'
+import { alternateLanguages, breadcrumbJsonLd, openGraphLocale, siteName } from '@/features/seo/lib/seo'
+import { decodeSlug, regionPath } from '@/shared/lib/urls'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>

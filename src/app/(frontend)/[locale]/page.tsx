@@ -4,10 +4,11 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
-import { HomeSections } from '@/components/Home'
+import { HomeSections } from '@/features/home/components/Home'
 import { routing, type Locale } from '@/i18n/routing'
-import { getHomeContent, getHomeVideos } from '@/utilities/content'
-import { homeLanguages, openGraphLocale, siteName } from '@/utilities/seo'
+import { getHomeContent } from '@/features/home/lib/home'
+import { getHomeVideos } from '@/features/home/lib/videos'
+import { homeLanguages, openGraphLocale, siteName } from '@/features/seo/lib/seo'
 
 type HomePageProps = {
   params: Promise<{ locale: string }>

@@ -3,9 +3,9 @@ import { hasLocale } from 'next-intl'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
-import { InfoPage } from '@/components/InfoPage'
+import { InfoPage } from '@/features/info/components/InfoPage'
 import { routing } from '@/i18n/routing'
-import { infoPageMetadata } from '@/utilities/infoPages'
+import { infoPageMetadata } from '@/features/info/lib/infoPages'
 
 type PageProps = {
   params: Promise<{ locale: string }>

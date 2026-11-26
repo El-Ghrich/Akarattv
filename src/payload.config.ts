@@ -44,9 +44,9 @@ import { RelatedArticleBlock } from './blocks/RelatedArticleBlock'
 import { YouTubeBlock } from './blocks/YouTubeBlock'
 import { InfoBoxBlock } from './blocks/InfoBoxBlock'
 import { isAdmin, isAdminOrEditor } from './access'
-import { revalidationTags } from './utilities/cacheTags'
-import { l } from './utilities/labels'
-import { revalidateContent } from './utilities/revalidate'
+import { revalidationTags } from './shared/lib/cacheTags'
+import { l } from './shared/lib/labels'
+import { revalidateContent } from './shared/lib/revalidate'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -90,7 +90,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     components: {
-      beforeLogin: ['@/components/Admin/LoginChallenge#LoginChallenge'],
+      beforeLogin: ['@/features/auth/components/LoginChallenge#LoginChallenge'],
     },
   },
   collections: [Users, Media, Authors, Categories, Regions, Articles, Videos],

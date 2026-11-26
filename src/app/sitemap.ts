@@ -2,10 +2,10 @@ import type { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
-import { infoLastUpdated, infoPageSlugs } from '@/content/infoPages'
+import { infoLastUpdated, infoPageSlugs } from '@/features/info/content'
 import { routing, type Locale } from '@/i18n/routing'
-import { absoluteURL } from '@/utilities/seo'
-import { articlePath, categoryPath, regionPath } from '@/utilities/urls'
+import { absoluteURL } from '@/features/seo/lib/seo'
+import { articlePath, categoryPath, regionPath } from '@/shared/lib/urls'
 
 /**
  * `/sitemap.xml` with one URL per locale plus `hreflang` alternates.

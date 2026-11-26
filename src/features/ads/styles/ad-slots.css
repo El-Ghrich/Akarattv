@@ -1,0 +1,94 @@
+/* --------------------------------------------------------------------------
+ * Ad-prep shells (Phase A). With the debug flag off nothing renders, so these
+ * rules are inert in production. Logical properties only: AR and FR share one
+ * stylesheet and neither needs mirrored directional overrides.
+ * -------------------------------------------------------------------------- */
+
+.ad-slot {
+  display: flex;
+  justify-content: center;
+  margin-block: 2rem;
+  max-inline-size: 100%;
+}
+
+.ad-slot__frame {
+  display: flex;
+  flex-direction: column;
+  inline-size: min(100%, var(--ad-mobile-max, 100%));
+  max-inline-size: 100%;
+}
+
+.ad-slot__label {
+  display: block;
+  padding-block-end: 0.25rem;
+  color: var(--color-ink-500);
+  font-size: var(--text-label);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.ad-slot__creative {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  aspect-ratio: var(--ad-mobile-ratio, auto);
+  overflow: hidden;
+  text-align: center;
+}
+
+.ad-slot--debug .ad-slot__frame {
+  border: 1px dashed var(--color-gold-500);
+  border-radius: var(--radius-card);
+  background: rgb(235 213 156 / 0.16);
+  padding-block: 0.5rem;
+  padding-inline: 0.5rem;
+}
+
+.ad-slot--debug .ad-slot__creative {
+  color: var(--color-ink-500);
+  font-size: var(--text-label);
+  line-height: 1.5;
+  padding-inline: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+/* Overlay slots never take space in the flow. */
+.ad-slot--overlay-bar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 40;
+  margin-block: 0;
+  padding-block-end: env(safe-area-inset-bottom, 0px);
+  border-block-start: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+
+.has-ad-overlays {
+  padding-block-end: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 1024px) {
+  .ad-slot__frame {
+    inline-size: min(100%, var(--ad-desktop-max, 100%));
+  }
+
+  .ad-slot__creative {
+    aspect-ratio: var(--ad-desktop-ratio, auto);
+  }
+
+  .ad-slot--mobile-hidden {
+    display: none;
+  }
+
+  .has-ad-overlays {
+    padding-block-end: 0;
+  }
+}
+
+@media (max-width: 1023px) {
+  .ad-slot--desktop-hidden {
+    display: none;
+  }
+}

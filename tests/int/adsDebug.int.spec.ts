@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 const loadFlag = async (): Promise<boolean> => {
   vi.resetModules()
-  const module = await import('@/utilities/adsDebug')
+  const module = await import('@/features/ads/lib/adsDebug')
 
   return module.adsDebugEnabled
 }

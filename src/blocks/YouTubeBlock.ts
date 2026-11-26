@@ -1,5 +1,5 @@
 import type { Block } from 'payload'
-import { l } from '@/utilities/labels'
+import { l } from '@/shared/lib/labels'
 
 const YOUTUBE_URL =
   /^(?:https?:\/\/)?(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)[\w-]{11}(?:[?&#].*)?$/i

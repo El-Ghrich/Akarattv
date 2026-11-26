@@ -1,8 +1,8 @@
 import { hasLocale } from 'next-intl'
 
 import { routing, type Locale } from '@/i18n/routing'
-import { buildRssFeed, findCategory, getFeedArticles } from '@/utilities/feeds'
-import { decodeSlug } from '@/utilities/urls'
+import { buildRssFeed, findCategory, getFeedArticles } from '@/features/seo/lib/feeds'
+import { decodeSlug } from '@/shared/lib/urls'
 
 export const revalidate = 600
 

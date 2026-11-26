@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { AD_PLACEMENT, getInArticlePlacement } from '@/utilities/adPlacement'
+import { AD_PLACEMENT, getInArticlePlacement } from '@/features/ads/lib/adPlacement'
 
 const words = (count: number): string =>
   Array.from({ length: count }, (_, index) => `mot${index}`).join(' ')

@@ -1,8 +1,8 @@
 import { hasLocale } from 'next-intl'
 
-import { homeContent } from '@/content/home'
+import { homeContent } from '@/features/home/content'
 import { routing } from '@/i18n/routing'
-import { OG_ALT, OG_CONTENT_TYPE, OG_SIZE, renderOgImage } from '@/utilities/ogImage'
+import { OG_ALT, OG_CONTENT_TYPE, OG_SIZE, renderOgImage } from '@/features/seo/components/ogImage'
 
 export const alt = OG_ALT
 export const size = OG_SIZE

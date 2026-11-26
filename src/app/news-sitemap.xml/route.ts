@@ -1,5 +1,5 @@
 import { routing } from '@/i18n/routing'
-import { buildNewsSitemap, getNewsArticles } from '@/utilities/feeds'
+import { buildNewsSitemap, getNewsArticles } from '@/features/seo/lib/feeds'
 
 /**
  * Google News sitemap: published stories from the last 48 hours across both

@@ -1,9 +1,9 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminOrEditor } from '@/access'
-import { revalidationTags } from '@/utilities/cacheTags'
-import { slugify } from '@/utilities/slugify'
-import { l } from '@/utilities/labels'
-import { revalidateContent } from '@/utilities/revalidate'
+import { revalidationTags } from '@/shared/lib/cacheTags'
+import { slugify } from '@/shared/lib/slugify'
+import { l } from '@/shared/lib/labels'
+import { revalidateContent } from '@/shared/lib/revalidate'
 
 /**
  * Returns the id of a relationship value, whether it was submitted as a raw id

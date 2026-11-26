@@ -1,6 +1,6 @@
 import { MigrateDownArgs, MigrateUpArgs, sql } from '@payloadcms/db-postgres'
 
-import { slugify } from '../utilities/slugify'
+import { slugify } from '../shared/lib/slugify'
 
 type UserRow = {
   author_id: number | null

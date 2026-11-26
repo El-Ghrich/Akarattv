@@ -5,8 +5,8 @@ import { getLocale } from 'next-intl/server'
 import { getPayload } from 'payload'
 import React from 'react'
 
-import { NotFoundView, type NotFoundArticle } from '@/components/NotFoundView'
-import { notFoundContent } from '@/content/notFound'
+import { NotFoundView, type NotFoundArticle } from '@/features/not-found/components/NotFoundView'
+import { notFoundContent } from '@/features/not-found/content'
 import config from '@/payload.config'
 import { routing, type Locale } from '@/i18n/routing'
 

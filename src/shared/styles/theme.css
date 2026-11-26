@@ -1,0 +1,58 @@
+@theme {
+  --color-green-950: #0a2003;
+  --color-green-900: #0f2e04;
+  --color-green-800: #143a06;
+  --color-green-700: #1f4f0c;
+  --color-green-600: #2e6a17;
+  --color-green-100: #e6efe1;
+
+  --color-gold-700: #8f6b1f;
+  --color-gold-500: #c9a24b;
+  --color-gold-400: #ddbe6f;
+  --color-gold-300: #ebd59c;
+
+  --color-ink-900: #111712;
+  --color-ink-700: #3a423b;
+  --color-ink-500: #6b746c;
+  --color-ink-300: #b8bfb8;
+
+  --color-line: #e5e1d3;
+  --color-canvas: #f7f5ef;
+  --color-surface: #ffffff;
+  --color-breaking: #b3261e;
+  --color-success: #2e7d32;
+
+  --font-headline: var(--font-site), 'Segoe UI', Tahoma, system-ui, sans-serif;
+  --font-body: var(--font-site), 'Segoe UI', Tahoma, system-ui, sans-serif;
+
+  --container-content: 1280px;
+  --radius-card: 8px;
+
+  --text-display: 44px;
+  --text-display--line-height: 1.35;
+  --text-display--font-weight: 800;
+  --text-h1: 38px;
+  --text-h1--line-height: 1.4;
+  --text-h1--font-weight: 800;
+  --text-h2: 28px;
+  --text-h2--line-height: 1.45;
+  --text-h2--font-weight: 700;
+  --text-h3: 22px;
+  --text-h3--line-height: 1.5;
+  --text-h3--font-weight: 700;
+  --text-card-title: 20px;
+  --text-card-title--line-height: 1.5;
+  --text-card-title--font-weight: 700;
+  --text-body-article: 19px;
+  --text-body-article--line-height: 1.9;
+  --text-body-article--font-weight: 400;
+  --text-body-ui: 16px;
+  --text-body-ui--line-height: 1.7;
+  --text-body-ui--font-weight: 400;
+  --text-meta: 14px;
+  --text-meta--line-height: 1.5;
+  --text-meta--font-weight: 600;
+  --text-label: 12px;
+  --text-label--line-height: 1.2;
+  --text-label--font-weight: 700;
+}

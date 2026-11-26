@@ -5,25 +5,25 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
-import { AdPopup } from '@/components/AdPopup'
-import { AdSlot } from '@/components/AdSlot'
-import { ConsentProvider } from '@/components/ConsentProvider'
-import { GoogleAnalytics } from '@/components/GoogleAnalytics'
-import { ConsentModeScript } from '@/components/GoogleAnalytics/ConsentModeScript'
-import { JsonLd } from '@/components/JsonLd'
-import { SiteFooter } from '@/components/SiteFooter'
-import { SiteHeader } from '@/components/SiteHeader'
+import { AdPopup } from '@/features/ads/components/AdPopup'
+import { AdSlot } from '@/features/ads/components/AdSlot'
+import { ConsentProvider } from '@/features/consent/components/ConsentProvider'
+import { GoogleAnalytics } from '@/features/consent/components/GoogleAnalytics'
+import { ConsentModeScript } from '@/features/consent/components/GoogleAnalytics/ConsentModeScript'
+import { JsonLd } from '@/features/seo/components/JsonLd'
+import { SiteFooter } from '@/features/navigation/components/SiteFooter'
+import { SiteHeader } from '@/features/navigation/components/SiteHeader'
 import { routing } from '@/i18n/routing'
-import { adsDebugEnabled } from '@/utilities/adsDebug'
-import { analyticsEnabled } from '@/utilities/analytics'
-import { getLayoutChrome } from '@/utilities/layoutChrome'
+import { adsDebugEnabled } from '@/features/ads/lib/adsDebug'
+import { analyticsEnabled } from '@/features/consent/lib/analytics'
+import { getLayoutChrome } from '@/features/seo/lib/layoutChrome'
 import {
   organizationJsonLd,
   openGraphLocale,
   siteName,
   websiteJsonLd,
-} from '@/utilities/seo'
-import { getServerURL } from '@/utilities/serverURL'
+} from '@/features/seo/lib/seo'
+import { getServerURL } from '@/features/seo/lib/serverURL'
 
 import '../styles.css'
 

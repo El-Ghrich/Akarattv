@@ -7,22 +7,22 @@ import { getPayload } from 'payload'
 import React from 'react'
 
 import config from '@/payload.config'
-import { ArticleView } from '@/components/ArticleView'
-import { JsonLd } from '@/components/JsonLd'
-import { LiveArticle } from '@/components/LiveArticle'
+import { ArticleView } from '@/features/articles/components/ArticleView'
+import { JsonLd } from '@/features/seo/components/JsonLd'
+import { LiveArticle } from '@/features/articles/components/LiveArticle'
 import { getPathname } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
-import { adsDebugEnabled } from '@/utilities/adsDebug'
-import { getArticleAlternates } from '@/utilities/articleAlternates'
-import { getArticle, getLatestArticles } from '@/utilities/content'
+import { adsDebugEnabled } from '@/features/ads/lib/adsDebug'
+import { getArticleAlternates } from '@/features/seo/lib/articleAlternates'
+import { getArticle, getLatestArticles } from '@/features/articles/lib/articles'
 import {
   alternateLanguages,
   breadcrumbJsonLd,
   newsArticleJsonLd,
   openGraphLocale,
   siteName,
-} from '@/utilities/seo'
-import { articlePath, categoryPath, decodeSlug } from '@/utilities/urls'
+} from '@/features/seo/lib/seo'
+import { articlePath, categoryPath, decodeSlug } from '@/shared/lib/urls'
 
 type PageProps = {
   params: Promise<{ locale: string; slug: string }>

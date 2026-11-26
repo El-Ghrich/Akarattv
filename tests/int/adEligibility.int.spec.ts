@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { getAdSlot } from '@/content/adsRegistry'
-import { getPopupEligibility, type AdEligibilityInput } from '@/utilities/adEligibility'
+import { getAdSlot } from '@/features/ads/content/adsRegistry'
+import { getPopupEligibility, type AdEligibilityInput } from '@/features/ads/lib/adEligibility'
 
 const rules = getAdSlot('popup').placement
 

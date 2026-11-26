@@ -1,0 +1,175 @@
+@layer base {
+  :root {
+    --font-mono: 'Roboto Mono', monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    line-height: 1.5;
+
+    background: #f7f5ef;
+    color: #111712;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
+
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+
+    margin: 0;
+    color: #111712;
+    background: #f7f5ef;
+  }
+
+  /*
+   * Arabic uses Cairo; French uses Titillium Web. The other font stays second in
+   * the stack so Arabic quotations inside a French article (and vice versa) keep
+   * a script-appropriate face instead of dropping to a system font.
+   */
+  html[lang='ar'] {
+    --font-site: var(--font-cairo);
+  }
+
+  html[lang='fr'] {
+    --font-site: var(--font-titillium);
+  }
+
+  html[lang='ar'] body {
+    font-family: var(--font-cairo), var(--font-titillium), system-ui, sans-serif;
+  }
+
+  html[lang='fr'] body {
+    font-family: var(--font-titillium), var(--font-cairo), system-ui, sans-serif;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  h1 {
+    margin: 40px 0;
+    font-size: 64px;
+    line-height: 70px;
+    font-weight: bold;
+  }
+
+  p {
+    margin: 24px 0;
+  }
+
+  a {
+    color: currentColor;
+  }
+
+  a:focus {
+    opacity: 0.8;
+    outline: none;
+  }
+
+  a:active {
+    opacity: 0.7;
+    outline: none;
+  }
+
+  svg {
+    vertical-align: middle;
+  }
+}
+
+/*
+ * Arabic leading.
+ *
+ * Cairo has tall ascenders and deep descenders, and Arabic has no capitals to
+ * break up a line, so leading tuned for Latin looks cramped. The type-scale
+ * tokens are raised (every `text-*` utility reads them) and the bare element
+ * defaults follow, since Arabic copy also flows through plain `<p>`/`<h*>`.
+ * These rules are deliberately unlayered so they win over Tailwind's utilities.
+ */
+html[lang='ar'] {
+  --text-display--line-height: 1.55;
+  --text-h1--line-height: 1.6;
+  --text-h2--line-height: 1.65;
+  --text-h3--line-height: 1.7;
+  --text-card-title--line-height: 1.8;
+  --text-body-article--line-height: 2.1;
+  --text-body-ui--line-height: 1.95;
+  --text-meta--line-height: 1.7;
+  --text-label--line-height: 1.4;
+
+  line-height: 1.8;
+}
+
+html[lang='ar'] body {
+  line-height: 1.85;
+}
+
+html[lang='ar'] :is(h1, h2, h3, h4, h5, h6) {
+  line-height: 1.6;
+}
+
+html[lang='ar'] :is(p, figcaption, blockquote, dd) {
+  line-height: 2;
+}
+
+/* Long-form reading gets the loosest rhythm, and list items inside it have to
+   match the paragraphs they sit between. */
+html[lang='ar'] .article-content :is(p, li, blockquote) {
+  line-height: 2.15;
+}
+
+html[lang='ar'] .article-content li {
+  margin-block: 0.35em;
+}
+
+@media (max-width: 1024px) {
+  h1 {
+    margin: 24px 0;
+    font-size: 42px;
+    line-height: 42px;
+  }
+
+  p {
+    margin: calc(var(--base) * 0.75) 0;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 38px;
+    line-height: 38px;
+  }
+}
+
+@media (max-width: 400px) {
+  h1 {
+    font-size: 32px;
+    line-height: 32px;
+  }
+}
+
+.article-shell {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+.article-surface {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #000;
+  color: #f5f5f5;
+}

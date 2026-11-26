@@ -1,8 +1,8 @@
 import type { CollectionConfig } from 'payload'
 
 import { isAdmin, isAdminFieldLevel, isAdminOrEditor, isAdminOrSelf } from '@/access'
-import { l } from '@/utilities/labels'
-import { CHALLENGE_COOKIE } from '@/utilities/loginCookies'
+import { l } from '@/shared/lib/labels'
+import { CHALLENGE_COOKIE } from '@/features/auth/lib/loginCookies'
 import {
   clearChallengeCookies,
   clearLoginRateLimit,
@@ -10,8 +10,8 @@ import {
   enforceLoginProtection,
   isLoginRequest,
   serializeCookie,
-} from '@/utilities/loginSecurity'
-import { relationID, syncUserAuthor } from '@/utilities/userAuthor'
+} from '@/features/auth/lib/loginSecurity'
+import { relationID, syncUserAuthor } from '@/features/auth/lib/userAuthor'
 
 export const Users: CollectionConfig = {
   slug: 'users',

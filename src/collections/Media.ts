@@ -1,8 +1,8 @@
 import type { CollectionConfig, ImageUploadFormatOptions } from 'payload'
 import { isAdmin, isAdminOrEditor } from '@/access'
-import { revalidationTags } from '@/utilities/cacheTags'
-import { l } from '@/utilities/labels'
-import { revalidateContent } from '@/utilities/revalidate'
+import { revalidationTags } from '@/shared/lib/cacheTags'
+import { l } from '@/shared/lib/labels'
+import { revalidateContent } from '@/shared/lib/revalidate'
 
 /**
  * Every generated derivative is WebP.

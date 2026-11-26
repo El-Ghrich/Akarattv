@@ -3,8 +3,8 @@ import { headers as getHeaders } from 'next/headers'
 import localFont from 'next/font/local'
 import React from 'react'
 
-import { NotFoundView } from '@/components/NotFoundView'
-import { localeFromPathname } from '@/content/notFound'
+import { NotFoundView } from '@/features/not-found/components/NotFoundView'
+import { localeFromPathname } from '@/features/not-found/content'
 
 import './(frontend)/styles.css'
 

@@ -3,6 +3,7 @@ import React from 'react'
 
 import type { Article, Author, Category, Media, Region } from '@/payload-types'
 
+import { AdSlot } from '@/components/AdSlot'
 import { ArticleShare } from '@/components/ArticleShare'
 import { ArticleToc } from '@/components/ArticleToc'
 import {
@@ -14,6 +15,7 @@ import {
   RefreshIcon,
 } from '@/components/icons'
 import { RichText } from '@/components/RichText'
+import { adsCopy } from '@/content/adsCopy'
 import { articleContent } from '@/content/article'
 import type { Locale } from '@/i18n/routing'
 import {
@@ -56,6 +58,8 @@ export type ArticleViewProps = {
   latest?: ArticleTeaser[]
   locale: Locale
   preview?: boolean
+  /** Debug-only: render reserved ad shells. Never set in Live Preview. */
+  showAdSlots?: boolean
   shareUrl: string
 }
 
@@ -134,6 +138,7 @@ export function ArticleView({
   locale,
   preview = false,
   shareUrl,
+  showAdSlots = false,
 }: ArticleViewProps) {
   const content = articleContent[locale]
   const category = isDoc<Category>(article.category) ? article.category : null
@@ -149,7 +154,14 @@ export function ArticleView({
   const latestItems = latest.filter((item) => item.id !== article.id).slice(0, 5)
   const hasToc = headings.length > 0
   const hasLatest = latestItems.length > 0
-  const articleColumns = hasToc ? 'lg:col-span-6' : hasLatest ? 'lg:col-span-9' : 'lg:col-span-12'
+  // The sidebar ad lives in the existing right-hand rail, which is already
+  // hidden below `lg`. It never moves underneath the article on small screens.
+  const hasRightRail = hasLatest || showAdSlots
+  const articleColumns = hasToc
+    ? 'lg:col-span-6'
+    : hasRightRail
+      ? 'lg:col-span-9'
+      : 'lg:col-span-12'
 
   const relatedItems: ArticleTeaser[] = []
   const seen = new Set<number>([article.id])
@@ -351,7 +363,14 @@ export function ArticleView({
         ) : null}
 
         <article className={`${articleColumns} mx-auto w-full max-w-[720px]`}>
-          <RichText className="article-content" content={article.content} locale={locale} />
+          <RichText
+            className="article-content"
+            content={article.content}
+            locale={locale}
+            showAdSlot={showAdSlots}
+          />
+
+          {showAdSlots ? <AdSlot locale={locale} slot="article-end" /> : null}
 
           <div className="mt-12 space-y-6 border-t border-line pt-8">
             <ArticleShare
@@ -373,66 +392,69 @@ export function ArticleView({
           ) : null}
         </article>
 
-        {hasLatest ? (
+        {hasRightRail ? (
           <aside
-            aria-label={content.latest.title}
+            aria-label={hasLatest ? content.latest.title : adsCopy[locale].marker}
             className="hidden space-y-6 lg:col-span-3 lg:block"
           >
-            <div className="rounded-card border border-line bg-surface p-5 shadow-xs">
-              <div className="mb-4 flex items-center justify-between gap-3 border-b border-line pb-3">
-                <h2 className="m-0 flex items-center gap-2 font-headline text-body-ui font-bold text-green-900">
-                  <span className="h-2 w-2 rounded-full bg-gold-500" />
-                  <span>{content.latest.title}</span>
-                </h2>
-                <a
-                  className="text-label font-bold text-green-600 transition-colors hover:text-green-700"
-                  href={categoryLink}
-                >
-                  {content.latest.more}
-                </a>
+            {showAdSlots ? <AdSlot locale={locale} slot="sidebar" /> : null}
+            {hasLatest ? (
+              <div className="rounded-card border border-line bg-surface p-5 shadow-xs">
+                <div className="mb-4 flex items-center justify-between gap-3 border-b border-line pb-3">
+                  <h2 className="m-0 flex items-center gap-2 font-headline text-body-ui font-bold text-green-900">
+                    <span className="h-2 w-2 rounded-full bg-gold-500" />
+                    <span>{content.latest.title}</span>
+                  </h2>
+                  <a
+                    className="text-label font-bold text-green-600 transition-colors hover:text-green-700"
+                    href={categoryLink}
+                  >
+                    {content.latest.more}
+                  </a>
+                </div>
+
+                <div className="space-y-4">
+                  {latestItems.map((item) => {
+                    const image = isDoc<Media>(item.heroImage) ? item.heroImage : null
+                    const relative = formatRelativeArticleDate(
+                      item.publishedAt ?? item.createdAt,
+                      locale,
+                    )
+
+                    return (
+                      <a
+                        className="group flex items-center gap-3"
+                        href={articleHref(locale, item)}
+                        key={item.id}
+                      >
+                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-card bg-green-100">
+                          {image?.url ? (
+                            <Image
+                              alt={image.alt ?? item.title}
+                              className="object-cover transition-transform duration-300 group-hover:scale-105"
+                              fill
+                              sizes="64px"
+                              src={image.url}
+                            />
+                          ) : null}
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <h3 className="m-0 line-clamp-2 font-headline text-xs font-bold leading-snug text-ink-900 transition-colors group-hover:text-green-600">
+                            {item.title}
+                          </h3>
+                          {relative ? (
+                            <span className="text-[11px] text-ink-500" suppressHydrationWarning>
+                              {relative}
+                            </span>
+                          ) : null}
+                        </div>
+                      </a>
+                    )
+                  })}
+                </div>
               </div>
-
-              <div className="space-y-4">
-                {latestItems.map((item) => {
-                  const image = isDoc<Media>(item.heroImage) ? item.heroImage : null
-                  const relative = formatRelativeArticleDate(
-                    item.publishedAt ?? item.createdAt,
-                    locale,
-                  )
-
-                  return (
-                    <a
-                      className="group flex items-center gap-3"
-                      href={articleHref(locale, item)}
-                      key={item.id}
-                    >
-                      <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-card bg-green-100">
-                        {image?.url ? (
-                          <Image
-                            alt={image.alt ?? item.title}
-                            className="object-cover transition-transform duration-300 group-hover:scale-105"
-                            fill
-                            sizes="64px"
-                            src={image.url}
-                          />
-                        ) : null}
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <h3 className="m-0 line-clamp-2 font-headline text-xs font-bold leading-snug text-ink-900 transition-colors group-hover:text-green-600">
-                          {item.title}
-                        </h3>
-                        {relative ? (
-                          <span className="text-[11px] text-ink-500" suppressHydrationWarning>
-                            {relative}
-                          </span>
-                        ) : null}
-                      </div>
-                    </a>
-                  )
-                })}
-              </div>
-            </div>
+            ) : null}
           </aside>
         ) : null}
       </div>

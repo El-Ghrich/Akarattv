@@ -10,8 +10,11 @@ import Image from 'next/image'
 import React from 'react'
 
 import type { Article, Media } from '@/payload-types'
+
+import { AdSlot } from '@/components/AdSlot'
 import { InfoIcon } from '@/components/icons'
 import type { Locale } from '@/i18n/routing'
+import { getInArticlePlacement } from '@/utilities/adPlacement'
 
 type Direction = 'ltr' | 'rtl' | null | undefined
 
@@ -141,6 +144,9 @@ export type RichTextProps = {
   className?: string
   content: Article['content'] | null | undefined
   locale: Locale
+  /** Debug-only: inject the reserved in-article shell after a safe paragraph. */
+  showAdSlot?: boolean
+  hasManualAdBlock?: boolean
 }
 
 /**
@@ -150,8 +156,20 @@ export type RichTextProps = {
  * captions, block quotes with citations, ordered/unordered lists, etc.
  * `dir` is set on every block so Arabic, French and numbers can coexist.
  */
-export function RichText({ className, content, locale }: RichTextProps) {
+export function RichText({
+  className,
+  content,
+  locale,
+  hasManualAdBlock = false,
+  showAdSlot = false,
+}: RichTextProps) {
   if (!content) return null
+
+  // The planner returns a source node identity, never an edited document, so
+  // Lexical keeps rendering one stable tree and heading/TOC ids stay in sync.
+  const placement = showAdSlot
+    ? getInArticlePlacement(content, locale, { hasManualAdBlock })
+    : null
 
   // Mirrors `getArticleHeadings`: every heading takes a number, so TOC anchors
   // stay stable even when h4/h5 headings are hidden from the sidebar. The ids
@@ -190,9 +208,15 @@ export function RichText({ className, content, locale }: RichTextProps) {
 
       paragraph: ({ node, nodesToJSX }) => {
         const children = nodesToJSX({ nodes: node.children })
+        const paragraph = <p dir={dir(node)}>{children.length > 0 ? children : <br />}</p>
+
+        if (!placement?.shouldInject || placement.afterNode !== node) return paragraph
 
         return (
-          <p dir={dir(node)}>{children.length > 0 ? children : <br />}</p>
+          <React.Fragment key="in-article-1">
+            {paragraph}
+            <AdSlot locale={locale} slot="in-article-1" />
+          </React.Fragment>
         )
       },
 

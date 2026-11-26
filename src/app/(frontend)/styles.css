@@ -1219,3 +1219,204 @@ html[lang='ar'] .article-content li {
   }
 }
 
+/* --------------------------------------------------------------------------
+ * Ad-prep shells (Phase A). With the debug flag off nothing renders, so these
+ * rules are inert in production. Logical properties only: AR and FR share one
+ * stylesheet and neither needs mirrored directional overrides.
+ * -------------------------------------------------------------------------- */
+
+.ad-slot {
+  display: flex;
+  justify-content: center;
+  margin-block: 2rem;
+  max-inline-size: 100%;
+}
+
+.ad-slot__frame {
+  display: flex;
+  flex-direction: column;
+  inline-size: min(100%, var(--ad-mobile-max, 100%));
+  max-inline-size: 100%;
+}
+
+.ad-slot__label {
+  display: block;
+  padding-block-end: 0.25rem;
+  color: var(--color-ink-500);
+  font-size: var(--text-label);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.ad-slot__creative {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  aspect-ratio: var(--ad-mobile-ratio, auto);
+  overflow: hidden;
+  text-align: center;
+}
+
+.ad-slot--debug .ad-slot__frame {
+  border: 1px dashed var(--color-gold-500);
+  border-radius: var(--radius-card);
+  background: rgb(235 213 156 / 0.16);
+  padding-block: 0.5rem;
+  padding-inline: 0.5rem;
+}
+
+.ad-slot--debug .ad-slot__creative {
+  color: var(--color-ink-500);
+  font-size: var(--text-label);
+  line-height: 1.5;
+  padding-inline: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+/* Overlay slots never take space in the flow. */
+.ad-slot--overlay-bar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 40;
+  margin-block: 0;
+  padding-block-end: env(safe-area-inset-bottom, 0px);
+  border-block-start: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+
+.has-ad-overlays {
+  padding-block-end: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 1024px) {
+  .ad-slot__frame {
+    inline-size: min(100%, var(--ad-desktop-max, 100%));
+  }
+
+  .ad-slot__creative {
+    aspect-ratio: var(--ad-desktop-ratio, auto);
+  }
+
+  .ad-slot--mobile-hidden {
+    display: none;
+  }
+
+  .has-ad-overlays {
+    padding-block-end: 0;
+  }
+}
+
+@media (max-width: 1023px) {
+  .ad-slot--desktop-hidden {
+    display: none;
+  }
+}
+
+/* Popup placeholder: behaviour only, no creative and no tracking. */
+.ad-popup {
+  position: fixed;
+  inset-block: 0;
+  inset-inline: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding-block: 1rem;
+  padding-inline: 1rem;
+  background: rgb(10 32 3 / 0.55);
+}
+
+.ad-popup__dialog {
+  position: relative;
+  inline-size: min(100%, var(--ad-mobile-max, 400px));
+  max-inline-size: calc(100vw - 32px);
+  border: 1px dashed var(--color-gold-500);
+  border-radius: 12px;
+  background: var(--color-surface);
+  padding-block: 1.5rem;
+  padding-inline: 1.5rem;
+  box-shadow: 0 18px 50px rgb(0 0 0 / 0.25);
+}
+
+.ad-popup__close {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-end: 0.5rem;
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border: 1px solid var(--color-line);
+  border-radius: 9999px;
+  background: var(--color-surface);
+  color: var(--color-ink-700);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ad-popup__close:focus-visible {
+  outline: 2px solid var(--color-gold-500);
+  outline-offset: 2px;
+}
+
+.ad-popup__label {
+  display: block;
+  color: var(--color-ink-500);
+  font-size: var(--text-label);
+  font-weight: 700;
+}
+
+.ad-popup__title {
+  margin-block: 0.25rem 0.5rem;
+  margin-inline: 0;
+  color: var(--color-green-900);
+  font-family: var(--font-headline);
+  font-size: var(--text-h3);
+  font-weight: 700;
+}
+
+.ad-popup__description {
+  margin-block: 0;
+  margin-inline: 0 0 1rem;
+  color: var(--color-ink-500);
+  font-size: var(--text-meta);
+  line-height: 1.5;
+}
+
+.ad-popup__creative {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  aspect-ratio: var(--ad-mobile-ratio, 4 / 5);
+  border: 1px dashed var(--color-gold-500);
+  border-radius: var(--radius-card);
+}
+
+@media (min-width: 1024px) {
+  .ad-popup__dialog {
+    inline-size: min(100%, var(--ad-desktop-max, 400px));
+  }
+
+  .ad-popup__creative {
+    aspect-ratio: var(--ad-desktop-ratio, 4 / 5);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ad-popup {
+    animation: ad-popup-in 160ms ease-out;
+  }
+}
+
+@keyframes ad-popup-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+

@@ -5,6 +5,8 @@ import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
+import { AdPopup } from '@/components/AdPopup'
+import { AdSlot } from '@/components/AdSlot'
 import { ConsentProvider } from '@/components/ConsentProvider'
 import { GoogleAnalytics } from '@/components/GoogleAnalytics'
 import { ConsentModeScript } from '@/components/GoogleAnalytics/ConsentModeScript'
@@ -12,6 +14,7 @@ import { JsonLd } from '@/components/JsonLd'
 import { SiteFooter } from '@/components/SiteFooter'
 import { SiteHeader } from '@/components/SiteHeader'
 import { routing } from '@/i18n/routing'
+import { adsDebugEnabled } from '@/utilities/adsDebug'
 import { analyticsEnabled } from '@/utilities/analytics'
 import { getLayoutChrome } from '@/utilities/layoutChrome'
 import {
@@ -115,13 +118,29 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
       lang={locale}
     >
-      <body className="flex min-h-screen flex-col bg-canvas text-ink-900 antialiased">
+      <body
+        className={[
+          'flex min-h-screen flex-col bg-canvas text-ink-900 antialiased',
+          adsDebugEnabled ? 'has-ad-overlays' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
         <JsonLd data={[organizationJsonLd(), websiteJsonLd(locale)]} />
         <NextIntlClientProvider>
           <ConsentProvider analyticsEnabled={analyticsEnabled} locale={locale}>
             <SiteHeader alternates={alternates} locale={locale} newsletterHref={newsletterHref} />
+            {adsDebugEnabled ? <AdSlot locale={locale} slot="top-banner" /> : null}
             {children}
             <SiteFooter alternates={alternates} locale={locale} />
+            {adsDebugEnabled ? (
+              <>
+                <AdSlot locale={locale} slot="mobile-bottom-bar" />
+                <React.Suspense fallback={null}>
+                  <AdPopup locale={locale} />
+                </React.Suspense>
+              </>
+            ) : null}
             {analyticsEnabled ? <ConsentModeScript /> : null}
             <React.Suspense fallback={null}>
               <GoogleAnalytics />

@@ -12,6 +12,7 @@ import { JsonLd } from '@/components/JsonLd'
 import { LiveArticle } from '@/components/LiveArticle'
 import { getPathname } from '@/i18n/navigation'
 import { routing, type Locale } from '@/i18n/routing'
+import { adsDebugEnabled } from '@/utilities/adsDebug'
 import { getArticleAlternates } from '@/utilities/articleAlternates'
 import { getArticle, getLatestArticles } from '@/utilities/content'
 import {
@@ -105,6 +106,8 @@ export default async function ArticlePage({ params, searchParams }: PageProps) {
   // Drafts are only readable by logged-in editors. An anonymous visitor can
   // append `?preview=1` to the URL without ever seeing unpublished content.
   const preview = requestedPreview && Boolean(user)
+  // No debug shells in Live Preview, matching the GA exclusion for preview pages.
+  const showAdSlots = adsDebugEnabled && !preview
   const article = await getArticle(slug, locale, preview)
 
   if (!article) notFound()
@@ -154,6 +157,7 @@ export default async function ArticlePage({ params, searchParams }: PageProps) {
           article={article}
           latest={latest}
           locale={locale}
+          showAdSlots={showAdSlots}
           shareUrl={shareUrl}
         />
       )}

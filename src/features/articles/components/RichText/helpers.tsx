@@ -64,7 +64,7 @@ export const image = (
 }
 
 const YOUTUBE_ID =
-  /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/i
+  /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})(?![\w-])/i
 
 export const youtubeId = (url?: null | string): string | null => {
   if (!url) return null

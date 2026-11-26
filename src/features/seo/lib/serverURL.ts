@@ -10,7 +10,7 @@ export const getServerURL = (): string | undefined => {
   const configured = process.env.NEXT_PUBLIC_SERVER_URL
   if (configured) return configured
 
-  const vercelURL = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL
+  const vercelURL = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL
 
   return vercelURL ? `https://${vercelURL}` : undefined
 }

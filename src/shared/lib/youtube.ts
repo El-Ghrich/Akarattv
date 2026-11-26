@@ -9,7 +9,7 @@
  */
 
 const YOUTUBE_ID =
-  /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})/i
+  /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{11})(?![\w-])/i
 
 const REQUEST_TIMEOUT_MS = 5_000
 
@@ -84,7 +84,7 @@ export const parseISODuration = (value: string | undefined): number | undefined 
 
 /** Seconds → `PT5M2S`, used by the JSON-LD `VideoObject.duration` field. */
 export const toISODuration = (totalSeconds: number): string => {
-  const safe = Math.max(0, Math.floor(totalSeconds))
+  const safe = Number.isFinite(totalSeconds) ? Math.max(0, Math.floor(totalSeconds)) : 0
   const hours = Math.floor(safe / 3_600)
   const minutes = Math.floor((safe % 3_600) / 60)
   const seconds = safe % 60
